@@ -16,6 +16,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Threading;
+using System.Collections;
+using System.Globalization;
+using System.Diagnostics;
+using InteractiveDataDisplay.WPF;
+using System.ComponentModel;
+using EEGVis_V2.Viewmodels;
 
 namespace EEGVis_V2.Views
 {
@@ -24,8 +30,32 @@ namespace EEGVis_V2.Views
     /// </summary>
     public partial class GraphView : UserControl
     {
+
+        public PointCollection Points
+        {
+            get { return (PointCollection)GetValue(PointsProperty); }
+            set 
+            { 
+                SetValue(PointsProperty, value);
+            }
+        }
+
+        // Using a DependencyProperty as the backing store for Points.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PointsProperty =
+            DependencyProperty.Register("Points", typeof(PointCollection), typeof(GraphView), new PropertyMetadata(PointsChanged));
+
+        private static void PointsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if(d is GraphView)
+            {
+                GraphView graphView = d as GraphView;
+                graphView.linegraph.Points = (PointCollection)e.NewValue;
+            }
+        }
+
         public GraphView()
         {
+            
             InitializeComponent();
         }
     }

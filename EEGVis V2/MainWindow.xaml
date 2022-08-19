@@ -8,6 +8,6 @@
         mc:Ignorable="d"
         Title="EEG Control" Height="450" Width="800">
     <Grid>
-        <views:GraphView DataContext="{Binding CurrentViewModel}"/>
+        <views:SerialGraphView DataContext="{Binding CurrentViewModel}"/>
     </Grid>
 </Window>

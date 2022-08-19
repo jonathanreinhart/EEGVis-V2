@@ -14,7 +14,7 @@ namespace EEGVis_V2
     /// </summary>
     public partial class App : Application
     {
-        MainViewModel mainViewModel;
+        private MainViewModel mainViewModel;
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);

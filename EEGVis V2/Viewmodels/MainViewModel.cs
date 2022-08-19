@@ -12,7 +12,7 @@ namespace EEGVis_V2.Viewmodels
 
         public MainViewModel()
         {
-            CurrentViewModel = new GraphViewModel();
+            CurrentViewModel = new SerialGraphViewModel();
         }
     }
 }
