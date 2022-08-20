@@ -36,36 +36,66 @@ namespace EEGVis_V2.Viewmodels
             }
         }
 
+        //saves the data from the last 5 seconds
+        private double[] x = new double[5000];
+        private List<double> _data = new List<double>();
+        private int _current_x = 0;
+
         public SerialGraphViewModel()
         {
-            var x = Enumerable.Range(0, 1001).Select(i => i / 10.0).ToArray();
-            var y = x.Select(v => Math.Abs(v) < 1e-10 ? 1 : Math.Sin(v) / v).ToArray();
-            Plot(x, y);
+            for (int i = 0; i < 5000; i++)
+            {
+                _data.Add(0);
+                x[i] = i;
+            }
+            Task.Factory.StartNew(() =>
+            {
+            //SerialData serialData = new SerialData();
+            while (!closing)
+            {
+                /*
+                if (serialData.newDataAvailable)
+                {
+                    for (int i = 0; i < 100; i++)
+                    {
+                        _data.RemoveAt(0);
+                        _data.Add(serialData.CurData[i]);
+                    }
+                    Trace.WriteLine(_data[0]);
+
+                    var y = _data.ToArray();
+                    App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                    {
+                        Plot(x, y);
+                    }));
+                }*/
+                for (int i = 0; i < 100; i++)
+                {
+                    _data.RemoveAt(0);
+                    _data.Add(_current_x % 1000);
+                    _current_x++;
+                }
+                var y = _data.ToArray();
+                App.Current.Dispatcher.Invoke(() => Plot(x, y));
+                    Thread.Sleep(100);
+                }
+            });
         }
 
+        /// <summary>
+        /// convert the data from an array to a pointcollection
+        /// </summary>
+        /// <param name="x">x values</param>
+        /// <param name="y">y values</param>
         private void Plot(IEnumerable x, IEnumerable y)
         {
-            if (x == null)
-                throw new ArgumentNullException("x");
-            if (y == null)
-                throw new ArgumentNullException("y");
-
             var points = new PointCollection();
             var enx = x.GetEnumerator();
             var eny = y.GetEnumerator();
-            while (true)
+            while (enx.MoveNext() && eny.MoveNext())
             {
-                var nx = enx.MoveNext();
-                var ny = eny.MoveNext();
-                if (nx && ny)
-                    points.Add(new Point(Convert.ToDouble(enx.Current, CultureInfo.InvariantCulture),
-                        Convert.ToDouble(eny.Current, CultureInfo.InvariantCulture)));
-                else if (!nx && !ny)
-                    break;
-                else
-                    throw new ArgumentException("x and y have different lengthes");
+                points.Add(new Point((double)enx.Current, (double)eny.Current));
             }
-
             Points = points;
         }
     }

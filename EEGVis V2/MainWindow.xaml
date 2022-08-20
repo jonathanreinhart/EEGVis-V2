@@ -8,6 +8,23 @@
         mc:Ignorable="d"
         Title="EEG Control" Height="450" Width="800">
     <Grid>
-        <views:SerialGraphView DataContext="{Binding CurrentViewModel}"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <views:SerialGraphView Grid.Row ="0" DataContext="{Binding CurrentViewModel}"/>
+        <views:SerialGraphView Grid.Row ="1" DataContext="{Binding CurrentViewModel}"/>
+        <views:SerialGraphView Grid.Row ="2" DataContext="{Binding CurrentViewModel}"/>
+        <views:SerialGraphView Grid.Row ="3" DataContext="{Binding CurrentViewModel}"/>
+        <views:SerialGraphView Grid.Row ="4" DataContext="{Binding CurrentViewModel}"/>
+        <views:SerialGraphView Grid.Row ="5" DataContext="{Binding CurrentViewModel}"/>
+        <views:SerialGraphView Grid.Row ="6" DataContext="{Binding CurrentViewModel}"/>
+        <views:SerialGraphView Grid.Row ="7" DataContext="{Binding CurrentViewModel}"/>
     </Grid>
 </Window>

@@ -19,16 +19,16 @@ namespace EEGVis_V2.models
         public bool closing = false;
         public bool newDataAvailable = false;
 
-        private List<double> curData;
+        private List<double> _curData;
         public List<double> CurData
         {
             get 
             {
                 //when ViewModel read the data, don't read same data again
                 newDataAvailable = false;
-                return curData; 
+                return _curData; 
             }
-            set { curData = value; }
+            set { _curData = value; }
         }
         
 
@@ -44,10 +44,11 @@ namespace EEGVis_V2.models
         /// </summary>
         public SerialData()
         {
+            CurData = new List<double>();
             Trace.WriteLine("Constructor");
             for (int i = 0; i < (dataLen - 2) / 5; i++)
             {
-                curData.Add(0);
+                CurData.Add(0);
             }
             fs.init(comPort, baudrate, buffersize);
             Thread.Sleep(1000);
@@ -76,8 +77,8 @@ namespace EEGVis_V2.models
                         for (int i = 0; i < (dataLen - 2) / 5; i++)
                         {
                             string dataPoint = data.Substring(i * 5, 5);
-                            curData[i] = double.Parse(dataPoint);
-                            Trace.WriteLine(curData[i]);
+                            CurData[i] = double.Parse(dataPoint);
+                            //Trace.WriteLine(CurData[i]);
                             //write curData[i] to DataFile
                         }
                         newDataAvailable = true;
