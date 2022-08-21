@@ -1,12 +1,11 @@
-﻿<Window x:Class="EEGVis_V2.MainWindow"
+﻿<Window x:Class="ScottPlot_Test.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:EEGVis_V2"
-        xmlns:views="clr-namespace:EEGVis_V2.Views"
+        xmlns:local="clr-namespace:ScottPlot_Test"
         mc:Ignorable="d"
-        Title="EEG Control" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -16,11 +15,15 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <views:SerialGraphView Grid.Row="0" Grid.Column="0"/>
-        <views:SerialGraphView Grid.Row="1" Grid.Column="0"/>
-        <views:SerialGraphView Grid.Row="2" Grid.Column="0"/>
-        <views:SerialGraphView Grid.Row="3" Grid.Column="0"/>
-        <views:SerialGraphView Grid.Row="4" Grid.Column="0"/>
-        <views:SerialGraphView Grid.Row="5" Grid.Column="0"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <local:GraphView Grid.Row="0" Grid.Column="0"/>
+        <local:GraphView Grid.Row="1" Grid.Column="0"/>
+        <local:GraphView Grid.Row="2" Grid.Column="0"/>
+        <local:GraphView Grid.Row="3" Grid.Column="0"/>
+        <local:GraphView Grid.Row="4" Grid.Column="0"/>
+        <local:GraphView Grid.Row="5" Grid.Column="0"/>
     </Grid>
 </Window>

@@ -22,8 +22,8 @@ namespace EEGVis_V2.Viewmodels
 {
     public class SerialGraphViewModel : ViewModelBase
     {
-        private PointCollection points;
-        public PointCollection Points
+        private double[] points;
+        public double[] Points
         {
             get
             {
@@ -32,71 +32,58 @@ namespace EEGVis_V2.Viewmodels
             set
             {
                 points = value;
-                OnPropertyChanged(nameof(Points));
             }
         }
 
-        //saves the data from the last 5 seconds
-        private double[] x = new double[5000];
-        private List<double> _data = new List<double>();
         private int _current_x = 0;
 
         public SerialGraphViewModel()
         {
+            Points = new double[5000];
             for (int i = 0; i < 5000; i++)
             {
-                _data.Add(0);
-                x[i] = i;
+                Points[i] = 0;
             }
             Task.Factory.StartNew(() =>
             {
-            //SerialData serialData = new SerialData();
-            while (!closing)
-            {
-                /*
-                if (serialData.newDataAvailable)
+                //SerialData serialData = new SerialData();
+                while (!App.Current.Dispatcher.HasShutdownStarted)
                 {
-                    for (int i = 0; i < 100; i++)
+                    /*
+                    if (serialData.newDataAvailable)
                     {
-                        _data.RemoveAt(0);
-                        _data.Add(serialData.CurData[i]);
-                    }
-                    Trace.WriteLine(_data[0]);
+                        for (int i = 0; i < 100; i++)
+                        {
+                            _data.RemoveAt(0);
+                            _data.Add(serialData.CurData[i]);
+                        }
+                        Trace.WriteLine(_data[0]);
 
-                    var y = _data.ToArray();
-                    App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                        var y = _data.ToArray();
+                        App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                        {
+                            Plot(x, y);
+                        }));
+                    }*/
+                    App.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                     {
-                        Plot(x, y);
+                        double[] newData = new double[5000];
+                        for (int i = 0; i < Points.Length - 100; i++)
+                        {
+                            newData[i] = Points[i + 100];
+                        }
+                        for (int i = Points.Length-100; i < Points.Length; i++)
+                        {
+                            newData[i] = (_current_x % 1000)*0.001;
+                            _current_x++;
+                        }
+                        Points = newData;
+                        OnPropertyChanged(nameof(Points));
                     }));
-                }*/
-                for (int i = 0; i < 100; i++)
-                {
-                    _data.RemoveAt(0);
-                    _data.Add(_current_x % 1000);
-                    _current_x++;
-                }
-                var y = _data.ToArray();
-                App.Current.Dispatcher.Invoke(() => Plot(x, y));
                     Thread.Sleep(100);
                 }
+                //serialData.closing = true;
             });
-        }
-
-        /// <summary>
-        /// convert the data from an array to a pointcollection
-        /// </summary>
-        /// <param name="x">x values</param>
-        /// <param name="y">y values</param>
-        private void Plot(IEnumerable x, IEnumerable y)
-        {
-            var points = new PointCollection();
-            var enx = x.GetEnumerator();
-            var eny = y.GetEnumerator();
-            while (enx.MoveNext() && eny.MoveNext())
-            {
-                points.Add(new Point((double)enx.Current, (double)eny.Current));
-            }
-            Points = points;
         }
     }
 }

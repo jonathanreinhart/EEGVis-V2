@@ -9,8 +9,6 @@ namespace EEGVis_V2.Viewmodels
 {
     public class ViewModelBase: INotifyPropertyChanged
     {
-        public bool closing = false;
-
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
         {

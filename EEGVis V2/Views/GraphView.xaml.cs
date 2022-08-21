@@ -22,6 +22,7 @@ using System.Diagnostics;
 using InteractiveDataDisplay.WPF;
 using System.ComponentModel;
 using EEGVis_V2.Viewmodels;
+using System.Windows.Threading;
 
 namespace EEGVis_V2.Views
 {
@@ -30,7 +31,7 @@ namespace EEGVis_V2.Views
     /// </summary>
     public partial class GraphView : UserControl
     {
-
+        /*
         public PointCollection Points
         {
             get { return (PointCollection)GetValue(PointsProperty); }
@@ -52,11 +53,44 @@ namespace EEGVis_V2.Views
                 graphView.linegraph.Points = (PointCollection)e.NewValue;
             }
         }
+        */
+
+        public double[] DataY;
+
+        public double[] GraphData
+        {
+            get { return (double[])GetValue(GraphDataProperty); }
+            set { SetValue(GraphDataProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for GraphData.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty GraphDataProperty =
+            DependencyProperty.Register("GraphData", typeof(double[]), typeof(GraphView), new PropertyMetadata(PointsChanged));
+
+        private static void PointsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is GraphView)
+            {
+                GraphView graphView = d as GraphView;
+                graphView.Dispatcher.Invoke(() =>
+                {
+                    double[] newData = (double[])e.NewValue;
+                    for(int i = 0; i < 5000; i++)
+                    {
+                        graphView.DataY[i] = newData[i];
+                    }
+                    graphView.DataPlot.Render();
+                    graphView.DataPlot.Plot.AxisAuto();
+                });
+            }
+        }
 
         public GraphView()
         {
-            
             InitializeComponent();
+            DataY = new double[5000];
+            DataPlot.Plot.AddSignal(DataY);
+            DataPlot.Plot.Frameless();
         }
     }
 }

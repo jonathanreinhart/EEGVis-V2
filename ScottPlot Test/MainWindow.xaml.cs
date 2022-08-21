@@ -1,8 +1,9 @@
-﻿using EEGVis_V2.Viewmodels;
+﻿using ScottPlot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,14 +15,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace EEGVis_V2.Views
+namespace ScottPlot_Test
 {
     /// <summary>
-    /// Interaction logic for SerialDataGraph.xaml
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class SerialGraphView : UserControl
+    public partial class MainWindow : Window
     {
-        public SerialGraphView()
+        public MainWindow()
         {
             InitializeComponent();
         }
