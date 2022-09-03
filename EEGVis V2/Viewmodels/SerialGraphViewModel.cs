@@ -19,11 +19,14 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using ScottPlot.Drawing.Colormaps;
 using System.Windows.Media;
+using System.Windows.Input;
+using EEGVis_V2.Commands;
 
 namespace EEGVis_V2.Viewmodels
 {
     public class SerialGraphViewModel : ViewModelBase
     {
+        #region properties
         private double[] points;
         public double[] Points
         {
@@ -50,49 +53,63 @@ namespace EEGVis_V2.Viewmodels
                 OnPropertyChanged(nameof(ConColor));
             }
         }
+        #endregion
+
+        public ICommand Restart { get; }
+        public SerialData SerialData_;
 
         public SerialGraphViewModel()
         {
-            conColor = new SolidColorBrush(Color.FromRgb(255,0,0));
+            SerialData_ = new SerialData();
+            Restart = new RestartSerialCommand(this);
+            conColor = new SolidColorBrush(Color.FromRgb(152,0,5));
             Points = new double[5000];
             for (int i = 0; i < 5000; i++)
             {
                 Points[i] = 0;
             }
-            Task.Factory.StartNew(() =>
+            Thread plotThread = new Thread(PlotData);
+            plotThread.Start();
+        }
+
+        private void PlotData(object? obj)
+        {
+            while (!SerialData_.connected && !App.Current.Dispatcher.HasShutdownStarted) ;
+            App.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
             {
-                SerialData serialData = new SerialData();
-                while (!serialData.connected && !App.Current.Dispatcher.HasShutdownStarted) ;
-                App.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                ConColor = new SolidColorBrush(Color.FromRgb(0, 155, 31));
+            }));
+            while (App.Current != null && !SerialData_.closing)
+            {
+                if (!App.Current.Dispatcher.HasShutdownStarted)
                 {
-                    ConColor = new SolidColorBrush(Color.FromRgb(0, 255, 0));
-                }));
-                while (App.Current!=null)
-                {
-                    if (!App.Current.Dispatcher.HasShutdownStarted)
+                    if (SerialData_.newDataAvailable)
                     {
-                        if (serialData.newDataAvailable)
+                        App.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                         {
-                            App.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                            double[] newData = new double[5000];
+                            for (int i = 0; i < Points.Length - 100; i++)
                             {
-                                double[] newData = new double[5000];
-                                for (int i = 0; i < Points.Length - 100; i++)
-                                {
-                                    newData[i] = Points[i + 100];
-                                }
-                                for (int i = Points.Length - 100; i < Points.Length; i++)
-                                {
-                                    newData[i] = serialData.CurData[i - Points.Length + 100];
-                                }
-                                Points = newData;
-                                OnPropertyChanged(nameof(Points));
-                            }));
-                        }
+                                newData[i] = Points[i + 100];
+                            }
+                            for (int i = Points.Length - 100; i < Points.Length; i++)
+                            {
+                                newData[i] = SerialData_.CurData[i - Points.Length + 100];
+                            }
+                            Points = newData;
+                            OnPropertyChanged(nameof(Points));
+                        }));
                     }
-                    Thread.Sleep(10);
                 }
-                serialData.closing = true;
-            });
+                Thread.Sleep(10);
+            }
+            SerialData_.closing = true;
+            if (SerialData_.reconnecting)
+            {
+                SerialData_ = new SerialData();
+                Thread new_plotThread = new Thread(PlotData);
+                new_plotThread.Start();
+            }
         }
     }
 }

@@ -15,11 +15,12 @@ namespace EEGVis_V2.models
     /// <summary>
     /// Class for handling the EEG data coming from Arduino
     /// </summary>
-    internal class SerialData
+    public class SerialData
     {
         public bool closing = false;
         public bool newDataAvailable = false;
         public bool connected = false;
+        public bool reconnecting = false;
 
         private List<double> _curData;
         public List<double> CurData

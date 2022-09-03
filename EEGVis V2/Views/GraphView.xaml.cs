@@ -58,6 +58,7 @@ namespace EEGVis_V2.Views
 
         public double[] DataY;
 
+        #region propdp
         public double[] GraphData
         {
             get { return (double[])GetValue(GraphDataProperty); }
@@ -68,6 +69,18 @@ namespace EEGVis_V2.Views
         public static readonly DependencyProperty GraphDataProperty =
             DependencyProperty.Register("GraphData", typeof(double[]), typeof(GraphView), new PropertyMetadata(PointsChanged));
 
+        public int Channel
+        {
+            get { return (int)GetValue(ChannelProperty); }
+            set { SetValue(ChannelProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Channel.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ChannelProperty =
+            DependencyProperty.Register("Channel", typeof(int), typeof(GraphView), new PropertyMetadata(null));
+        #endregion
+
+        #region propdp functions
         private static void PointsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is GraphView)
@@ -80,23 +93,26 @@ namespace EEGVis_V2.Views
                     {
                         graphView.DataY[i] = newData[i];
                     }
+                    graphView.DataPlot.Plot.AxisAuto();
                     graphView.DataPlot.Render();
                 });
             }
         }
+        #endregion
 
         public GraphView()
         {
             InitializeComponent();
             DataY = new double[5000];
             DataPlot.Plot.AddSignal(DataY);
-            /*
+            DataPlot.Plot.Title("channel " + Channel.ToString());
+            DataPlot.Plot.Style(ScottPlot.Style.Blue1);
             // hide just the horizontal axis ticks
             DataPlot.Plot.XAxis.Ticks(false);
             // hide the lines on the bottom, right, and top of the plot
             DataPlot.Plot.XAxis.Line(false);
             DataPlot.Plot.YAxis2.Line(false);
-            DataPlot.Plot.XAxis2.Line(false);*/
+            DataPlot.Plot.XAxis2.Line(false);
         }
     }
 }

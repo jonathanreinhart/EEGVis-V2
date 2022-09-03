@@ -6,22 +6,26 @@
              xmlns:local="clr-namespace:EEGVis_V2.Views" 
              xmlns:viewmodels="clr-namespace:EEGVis_V2.Viewmodels"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="#07263B">
     <UserControl.DataContext>
         <viewmodels:SerialGraphViewModel/>
     </UserControl.DataContext>
     <Grid>
         
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
-        
-        <local:GraphView Grid.Row="0" Grid.Column="0" GraphData="{Binding Points}"/>
-        <Label Grid.Row="1" Grid.Column="0" Content="connected"
-      HorizontalAlignment="Stretch" Margin="4" Name="label2"  Background="{Binding ConColor}" HorizontalContentAlignment="Center"/>
-    </Grid>
+
+        <Button Grid.Row="0" Grid.Column="1" Content="restart" Margin="10" Command="{Binding Restart}"/>
+        <local:GraphView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" GraphData="{Binding Points}" Channel="0"/>
+        <Label Grid.Row="2" Grid.Column="0" Content="connected" Grid.ColumnSpan="2" Foreground="#B5BEC5" FontWeight="Bold" FontSize="14"
+            HorizontalAlignment="Stretch" Margin="4" Name="label2"  Background="{Binding ConColor}" HorizontalContentAlignment="Center"/>
+    </Grid> 
 </UserControl>
