@@ -18,7 +18,7 @@ namespace FastSerialLibWrapper {
 		void coutSerialData();
 		String^ getString();
 		void close();
-		void writeStringToSerial(String^ output);
+		bool writeStringToSerial(String^ output);
 	private:
 		std::string convertNetStringToCString(String^ output);
 	};

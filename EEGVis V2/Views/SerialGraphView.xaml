@@ -11,6 +11,17 @@
         <viewmodels:SerialGraphViewModel/>
     </UserControl.DataContext>
     <Grid>
-        <local:GraphView GraphData="{Binding Points}"/>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <local:GraphView Grid.Row="0" Grid.Column="0" GraphData="{Binding Points}"/>
+        <Label Grid.Row="1" Grid.Column="0" Content="connected"
+      HorizontalAlignment="Stretch" Margin="4" Name="label2"  Background="{Binding ConColor}" HorizontalContentAlignment="Center"/>
     </Grid>
 </UserControl>

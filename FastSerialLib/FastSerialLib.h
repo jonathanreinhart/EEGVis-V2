@@ -15,7 +15,7 @@ namespace FastSerialLib {
 		__declspec(dllexport) static void coutSerialData();
 		__declspec(dllexport) static int getString(char* outArray);
 		__declspec(dllexport) static void close();
-		__declspec(dllexport) static void writeStringToSerial(std::string output);
+		__declspec(dllexport) static bool writeStringToSerial(std::string output);
 
 	private:
 		static HANDLE serialHandle;

@@ -22,6 +22,7 @@ namespace ScottPlot_Test
     /// </summary>
     public partial class GraphView : UserControl
     {
+        //to make it more efficient, turn off AxisAuto
         public GraphView()
         {
             InitializeComponent();

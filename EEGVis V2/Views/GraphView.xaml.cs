@@ -23,6 +23,7 @@ using InteractiveDataDisplay.WPF;
 using System.ComponentModel;
 using EEGVis_V2.Viewmodels;
 using System.Windows.Threading;
+using ScottPlot;
 
 namespace EEGVis_V2.Views
 {
@@ -80,7 +81,6 @@ namespace EEGVis_V2.Views
                         graphView.DataY[i] = newData[i];
                     }
                     graphView.DataPlot.Render();
-                    graphView.DataPlot.Plot.AxisAuto();
                 });
             }
         }
@@ -90,7 +90,13 @@ namespace EEGVis_V2.Views
             InitializeComponent();
             DataY = new double[5000];
             DataPlot.Plot.AddSignal(DataY);
-            DataPlot.Plot.Frameless();
+            /*
+            // hide just the horizontal axis ticks
+            DataPlot.Plot.XAxis.Ticks(false);
+            // hide the lines on the bottom, right, and top of the plot
+            DataPlot.Plot.XAxis.Line(false);
+            DataPlot.Plot.YAxis2.Line(false);
+            DataPlot.Plot.XAxis2.Line(false);*/
         }
     }
 }

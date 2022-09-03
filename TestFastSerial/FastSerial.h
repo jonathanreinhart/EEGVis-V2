@@ -10,7 +10,7 @@
 namespace FastSerialLib {
 	class FastSerial {
 	public:
-		static void init(std::string t_comPort, int t_baudrate, const int t_buffersize);
+		static void init(std::string t_comPort, int t_baudrate);
 		static bool available();
 		static void coutSerialData();
 		static int getString(char* outArray);

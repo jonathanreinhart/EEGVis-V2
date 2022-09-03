@@ -16,14 +16,14 @@ namespace FastSerialLib {
     /// <param name="baudrate">: baudrate to use</param>
     /// <param name="buffersize">: size of the data buffer</param>
     /// 
-    void FastSerial::init(std::string t_comPort, int t_baudrate, const int t_bufferSize) {
+    void FastSerial::init(std::string t_comPort, int t_baudrate) {
         //init variables
         dwBytesRead = 0;
         available_lines = 0;
 
         //init data buffer
-        dataReadBuffer = new char[t_bufferSize];
-        bufferSize = t_bufferSize;
+        dataReadBuffer = new char[1];
+        bufferSize = 1;
 
         //basic Serial setup
         std::wstring comPortP_temp = std::wstring(t_comPort.begin(), t_comPort.end());

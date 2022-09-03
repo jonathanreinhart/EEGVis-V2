@@ -9,12 +9,14 @@ void FastSerial::init(String^ t_comPort, int t_baudrate, const int t_bufferSize)
 }
 
 /// <summary>
-/// Writes a String to Serial port
+/// writes String to Serial
 /// </summary>
-/// <param name="output"></param>
-void FastSerial::writeStringToSerial(String^ output) {
+/// <param name="output">: soutput string</param>
+/// <returns>true if successful</returns>
+bool FastSerial::writeStringToSerial(String^ output) {
     std::string output_std = convertNetStringToCString(output);
-    FastSerialLib::FastSerial::writeStringToSerial(output_std);
+    bool successful = FastSerialLib::FastSerial::writeStringToSerial(output_std);
+    return successful;
 }
 
 /// <summary>

@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using LiveCharts.Wpf;
 using LiveCharts;
-using System.Windows.Media;
 using System.Threading;
 using EEGVis_V2.models;
 using LiveCharts.Configurations;
@@ -17,6 +16,9 @@ using System.Collections;
 using System.Globalization;
 using System.Windows.Threading;
 using System.Diagnostics;
+using System.Linq.Expressions;
+using ScottPlot.Drawing.Colormaps;
+using System.Windows.Media;
 
 namespace EEGVis_V2.Viewmodels
 {
@@ -35,10 +37,23 @@ namespace EEGVis_V2.Viewmodels
             }
         }
 
-        private int _current_x = 0;
+        private Brush conColor;
+        public Brush ConColor
+        {
+            get
+            {
+                return conColor;
+            }
+            set
+            {
+                conColor = value;
+                OnPropertyChanged(nameof(ConColor));
+            }
+        }
 
         public SerialGraphViewModel()
         {
+            conColor = new SolidColorBrush(Color.FromRgb(255,0,0));
             Points = new double[5000];
             for (int i = 0; i < 5000; i++)
             {
@@ -46,43 +61,37 @@ namespace EEGVis_V2.Viewmodels
             }
             Task.Factory.StartNew(() =>
             {
-                //SerialData serialData = new SerialData();
-                while (!App.Current.Dispatcher.HasShutdownStarted)
+                SerialData serialData = new SerialData();
+                while (!serialData.connected && !App.Current.Dispatcher.HasShutdownStarted) ;
+                App.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                 {
-                    /*
-                    if (serialData.newDataAvailable)
+                    ConColor = new SolidColorBrush(Color.FromRgb(0, 255, 0));
+                }));
+                while (App.Current!=null)
+                {
+                    if (!App.Current.Dispatcher.HasShutdownStarted)
                     {
-                        for (int i = 0; i < 100; i++)
+                        if (serialData.newDataAvailable)
                         {
-                            _data.RemoveAt(0);
-                            _data.Add(serialData.CurData[i]);
+                            App.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                            {
+                                double[] newData = new double[5000];
+                                for (int i = 0; i < Points.Length - 100; i++)
+                                {
+                                    newData[i] = Points[i + 100];
+                                }
+                                for (int i = Points.Length - 100; i < Points.Length; i++)
+                                {
+                                    newData[i] = serialData.CurData[i - Points.Length + 100];
+                                }
+                                Points = newData;
+                                OnPropertyChanged(nameof(Points));
+                            }));
                         }
-                        Trace.WriteLine(_data[0]);
-
-                        var y = _data.ToArray();
-                        App.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
-                        {
-                            Plot(x, y);
-                        }));
-                    }*/
-                    App.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-                    {
-                        double[] newData = new double[5000];
-                        for (int i = 0; i < Points.Length - 100; i++)
-                        {
-                            newData[i] = Points[i + 100];
-                        }
-                        for (int i = Points.Length-100; i < Points.Length; i++)
-                        {
-                            newData[i] = (_current_x % 1000)*0.001;
-                            _current_x++;
-                        }
-                        Points = newData;
-                        OnPropertyChanged(nameof(Points));
-                    }));
-                    Thread.Sleep(100);
+                    }
+                    Thread.Sleep(10);
                 }
-                //serialData.closing = true;
+                serialData.closing = true;
             });
         }
     }

@@ -9,11 +9,10 @@
 int main()
 {
     namespace FS = FastSerialLib;
-    std::string comPort = "COM3";
+    std::string comPort = "COM5";
     int baudrate = 115200;
-    int buffersize = 800;
-    FS::FastSerial::init(comPort, baudrate, buffersize);
-    char output[800];
+    FS::FastSerial::init(comPort, baudrate);
+    char output[1];
     int len;
 
     /*
@@ -31,19 +30,22 @@ int main()
     }
     */
 
+    int i = 0;
+
     //test 2 receive EEG data for 10secs after sending p char
     std::chrono::system_clock::time_point timePt;
-    timePt = std::chrono::system_clock::now() + std::chrono::seconds(1);
+    timePt = std::chrono::system_clock::now() + std::chrono::seconds(2);
     while (std::chrono::system_clock::now() < timePt);
     FS::FastSerial::writeStringToSerial("p\n");
+    timePt = std::chrono::system_clock::now() + std::chrono::seconds(1);
+    while (std::chrono::system_clock::now() < timePt);
     timePt = std::chrono::system_clock::now() + std::chrono::seconds(10);
     while (std::chrono::system_clock::now() < timePt) {
         if (FS::FastSerial::available()) {
-            len = FS::FastSerial::getString(output);
-            for (int i = 0; i < len; i++) {
-                std::cout << output[i];
-            }
-            std::cout << len << std::endl;
+            char outArray[600];
+            FS::FastSerial::getString(outArray);
+            std::cout /* << outArray */<< i << " " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - timePt + std::chrono::seconds(10)).count() << std::endl;
+            i++;
         }
     } 
     FS::FastSerial::close();

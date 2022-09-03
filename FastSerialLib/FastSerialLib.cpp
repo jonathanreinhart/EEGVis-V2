@@ -47,14 +47,16 @@ namespace FastSerialLib {
     }
 	
     /// <summary>
-    /// Writes a String to Serial port
+    /// write String to Serial
     /// </summary>
-    /// <param name="output"></param>
-    void FastSerial::writeStringToSerial(std::string output) {
+    /// <param name="output">output string</param>
+    /// <returns>true if successful</returns>
+    bool FastSerial::writeStringToSerial(std::string output) {
         char* outputArray = &output[0];
         if (!WriteFile(serialHandle, outputArray, output.length(), &dwBytesRead, NULL)) {
-            throw std::runtime_error("could not write to Serial port");
+            return false;
         }
+        return true;
     }
 
     /// <summary>

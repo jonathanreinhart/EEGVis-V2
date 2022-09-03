@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -18,6 +19,7 @@ namespace EEGVis_V2.models
     {
         public bool closing = false;
         public bool newDataAvailable = false;
+        public bool connected = false;
 
         private List<double> _curData;
         public List<double> CurData
@@ -32,11 +34,12 @@ namespace EEGVis_V2.models
         }
         
 
-        private const string comPort = "COM3";
+        private const string comPort = "COM5";
         private const int baudrate = 115200;
         private const int dataLen = 502;
-        private const int buffersize = 800;
-        private const string DataFile = @"EEGData.csv";
+        private const int buffersize = 1;
+        private const int _start_delay = 1700;
+        private const string _data_file = @"EEGData.csv";
         private readonly FastSerial fs = new FastSerial();
 
         /// <summary>
@@ -45,15 +48,11 @@ namespace EEGVis_V2.models
         public SerialData()
         {
             CurData = new List<double>();
-            Trace.WriteLine("Constructor");
             for (int i = 0; i < (dataLen - 2) / 5; i++)
             {
                 CurData.Add(0);
             }
             fs.init(comPort, baudrate, buffersize);
-            Thread.Sleep(1000);
-            fs.writeStringToSerial("p\n");
-            Thread.Sleep(100);
             Thread dataThread = new Thread(GetData);
             dataThread.Start();
         }
@@ -64,6 +63,15 @@ namespace EEGVis_V2.models
         /// <param name="obj"></param>
         private void GetData(object? obj)
         {
+            Thread.Sleep(_start_delay);
+            while (!fs.writeStringToSerial("p\n"))
+            {
+                Thread.Sleep(100);
+                fs.init(comPort, baudrate, buffersize);
+                Thread.Sleep(_start_delay);
+            }
+            connected = true;
+            Thread.Sleep(100);
             bool firstString = true;
             while (!closing)
             {
@@ -88,8 +96,8 @@ namespace EEGVis_V2.models
                         firstString = false;
                     }
                 }
-                Thread.Sleep(10);
             }
+            Trace.WriteLine("closing");
             fs.close();
         }
     }
