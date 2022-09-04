@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Runtime.InteropServices;
@@ -40,7 +41,8 @@ namespace EEGVis_V2.models
         private const int dataLen = 502;
         private const int buffersize = 1;
         private const int _start_delay = 1700;
-        private const string _data_file = @"EEGData.csv";
+        private const string _data_file = "../../../models/EEGData.csv";
+        private readonly StreamWriter _writer = new StreamWriter(_data_file);
         private readonly FastSerial fs = new FastSerial();
 
         /// <summary>
@@ -53,6 +55,7 @@ namespace EEGVis_V2.models
             {
                 CurData.Add(0);
             }
+            _writer.WriteLine("data");
             fs.init(comPort, baudrate, buffersize);
             Thread dataThread = new Thread(GetData);
             dataThread.Start();
@@ -87,8 +90,8 @@ namespace EEGVis_V2.models
                         {
                             string dataPoint = data.Substring(i * 5, 5);
                             CurData[i] = double.Parse(dataPoint);
-                            //Trace.WriteLine(CurData[i]);
-                            //write curData[i] to DataFile
+                            //write current data to file
+                            _writer.WriteLine(CurData[i].ToString());
                         }
                         newDataAvailable = true;
                     }
@@ -99,6 +102,7 @@ namespace EEGVis_V2.models
                 }
             }
             Trace.WriteLine("closing");
+            _writer.Close();
             fs.close();
         }
     }
