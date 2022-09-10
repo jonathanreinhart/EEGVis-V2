@@ -22,6 +22,7 @@ namespace EEGVis_V2.models
         public bool newDataAvailable = false;
         public bool connected = false;
         public bool reconnecting = false;
+        public const int NumDatapoints = 200;//datapoints in 1s
 
         private List<double> _curData;
         public List<double> CurData
@@ -38,9 +39,9 @@ namespace EEGVis_V2.models
 
         private const string comPort = "COM5";
         private const int baudrate = 115200;
-        private const int dataLen = 502;
         private const int buffersize = 1;
         private const int _start_delay = 1700;
+        private const int _data_len= (NumDatapoints/10) * 5 + 2;
         private const string _data_file = "../../../models/EEGData.csv";
         private readonly StreamWriter _writer = new StreamWriter(_data_file);
         private readonly FastSerial fs = new FastSerial();
@@ -51,7 +52,7 @@ namespace EEGVis_V2.models
         public SerialData()
         {
             CurData = new List<double>();
-            for (int i = 0; i < (dataLen - 2) / 5; i++)
+            for (int i = 0; i < NumDatapoints / 10; i++)
             {
                 CurData.Add(0);
             }
@@ -86,7 +87,7 @@ namespace EEGVis_V2.models
                     {
                         //divide string in groups of five, and save
                         //in curData as double
-                        for (int i = 0; i < (dataLen - 2) / 5; i++)
+                        for (int i = 0; i < NumDatapoints/10; i++)
                         {
                             string dataPoint = data.Substring(i * 5, 5);
                             CurData[i] = double.Parse(dataPoint);

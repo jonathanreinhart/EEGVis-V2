@@ -10,7 +10,13 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <views:SerialGraphView Grid.Row="0" Grid.Column="0"/>
+        <views:SerialGraphView Grid.Row="1" Grid.Column="0"/>
+        <views:SerialGraphView Grid.Row="2" Grid.Column="0"/>
+        <views:SerialGraphView Grid.Row="3" Grid.Column="0"/>
     </Grid>
 </Window>

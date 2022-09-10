@@ -57,14 +57,17 @@ namespace EEGVis_V2.Viewmodels
 
         public ICommand Restart { get; }
         public SerialData SerialData_;
+        private int _num_datapoints;
 
         public SerialGraphViewModel()
         {
             SerialData_ = new SerialData();
             Restart = new RestartSerialCommand(this);
             conColor = new SolidColorBrush(Color.FromRgb(152,0,5));
-            Points = new double[5000];
-            for (int i = 0; i < 5000; i++)
+            _num_datapoints = SerialData.NumDatapoints*5;
+
+            Points = new double[_num_datapoints];
+            for (int i = 0; i < _num_datapoints; i++)
             {
                 Points[i] = 0;
             }
@@ -87,14 +90,15 @@ namespace EEGVis_V2.Viewmodels
                     {
                         App.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                         {
-                            double[] newData = new double[5000];
-                            for (int i = 0; i < Points.Length - 100; i++)
+                            double[] newData = new double[_num_datapoints];
+                            int newDataNum = (SerialData.NumDatapoints / 10);
+                            for (int i = 0; i < Points.Length - newDataNum; i++)
                             {
-                                newData[i] = Points[i + 100];
+                                newData[i] = Points[i + newDataNum];
                             }
-                            for (int i = Points.Length - 100; i < Points.Length; i++)
+                            for (int i = Points.Length - newDataNum; i < Points.Length; i++)
                             {
-                                newData[i] = SerialData_.CurData[i - Points.Length + 100];
+                                newData[i] = SerialData_.CurData[i - Points.Length + newDataNum];
                             }
                             Points = newData;
                             OnPropertyChanged(nameof(Points));

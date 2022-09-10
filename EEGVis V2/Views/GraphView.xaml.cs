@@ -56,7 +56,9 @@ namespace EEGVis_V2.Views
         }
         */
 
+        public double[] DataX;
         public double[] DataY;
+        public bool FirstCall = true;
 
         #region propdp
         public double[] GraphData
@@ -89,11 +91,22 @@ namespace EEGVis_V2.Views
                 graphView.Dispatcher.Invoke(() =>
                 {
                     double[] newData = (double[])e.NewValue;
-                    for(int i = 0; i < 5000; i++)
+                    if (graphView.FirstCall)
+                    {
+                        graphView.DataX = new double[newData.Length];
+                        graphView.DataY = new double[newData.Length];
+                        for(int i = 0; i < newData.Length; i++)
+                        {
+                            graphView.DataX[i] = i;
+                        }
+                        graphView.DataPlot.Plot.AddSignal(graphView.DataY);
+                        graphView.FirstCall = false;
+                    }
+                    for(int i = 0; i < newData.Length; i++)
                     {
                         graphView.DataY[i] = newData[i];
                     }
-                    graphView.DataPlot.Plot.AxisAuto();
+                    //graphView.DataPlot.Plot.AxisAuto();
                     graphView.DataPlot.Render();
                 });
             }
@@ -103,8 +116,6 @@ namespace EEGVis_V2.Views
         public GraphView()
         {
             InitializeComponent();
-            DataY = new double[5000];
-            DataPlot.Plot.AddSignal(DataY);
             DataPlot.Plot.Title("channel " + Channel.ToString());
             DataPlot.Plot.Style(ScottPlot.Style.Blue1);
             // hide just the horizontal axis ticks
