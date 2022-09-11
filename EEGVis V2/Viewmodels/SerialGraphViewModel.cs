@@ -61,10 +61,10 @@ namespace EEGVis_V2.Viewmodels
 
         public SerialGraphViewModel()
         {
-            SerialData_ = new SerialData();
+            SerialData_ = new SerialData("COM5");
             Restart = new RestartSerialCommand(this);
             conColor = new SolidColorBrush(Color.FromRgb(152,0,5));
-            _num_datapoints = SerialData.NumDatapoints*5;
+            _num_datapoints = SerialData.NumDatapoints*5*SerialData.NumChannels;
 
             Points = new double[_num_datapoints];
             for (int i = 0; i < _num_datapoints; i++)
@@ -91,7 +91,7 @@ namespace EEGVis_V2.Viewmodels
                         App.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                         {
                             double[] newData = new double[_num_datapoints];
-                            int newDataNum = (SerialData.NumDatapoints / 10);
+                            int newDataNum = (SerialData.NumChannels * SerialData.NumDatapoints / 10);
                             for (int i = 0; i < Points.Length - newDataNum; i++)
                             {
                                 newData[i] = Points[i + newDataNum];
@@ -110,7 +110,7 @@ namespace EEGVis_V2.Viewmodels
             SerialData_.closing = true;
             if (SerialData_.reconnecting)
             {
-                SerialData_ = new SerialData();
+                SerialData_ = new SerialData("COM5");
                 Thread new_plotThread = new Thread(PlotData);
                 new_plotThread.Start();
             }

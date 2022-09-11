@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:viewmodels="clr-namespace:EEGVis_V2.Viewmodels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <WpfPlot x:Name="DataPlot"/>
+    <Grid x:Name="grid">
+        
     </Grid>
 </UserControl>
