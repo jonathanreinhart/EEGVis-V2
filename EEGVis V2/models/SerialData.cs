@@ -43,7 +43,7 @@ namespace EEGVis_V2.models
         private const int buffersize = 1;
         private const int _start_delay = 1700;
         private const string _data_file = "../../../models/EEGData.csv";
-        private readonly StreamWriter _writer = new StreamWriter(_data_file);
+        private readonly StreamWriter _writer;
         private readonly FastSerial fs = new FastSerial();
 
         /// <summary>
@@ -58,6 +58,7 @@ namespace EEGVis_V2.models
             {
                 CurData.Add(0);
             }
+            _writer = new StreamWriter(_data_file);
             _writer.WriteLine("data");
             fs.init(comPort, baudrate, buffersize);
             Thread dataThread = new Thread(GetData);

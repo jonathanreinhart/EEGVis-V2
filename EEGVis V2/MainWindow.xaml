@@ -5,12 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EEGVis_V2"
         xmlns:views="clr-namespace:EEGVis_V2.Views"
+        xmlns:viewmodels="clr-namespace:EEGVis_V2.Viewmodels"
         mc:Ignorable="d"
         Title="EEG Control" Height="450" Width="800">
+
+    <Window.Resources>
+
+        <DataTemplate DataType="{x:Type viewmodels:SerialGraphViewModel}">
+
+            <views:SerialGraphView/>
+
+        </DataTemplate>
+
+    </Window.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <views:SerialGraphView Grid.Row="0" Grid.Column="0"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Button Content="next page" Command="{Binding NextPage}" Padding="10" Margin="10"/>
+        <ContentControl x:Name="Pages" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding CurrentPage}"/>
     </Grid>
 </Window>

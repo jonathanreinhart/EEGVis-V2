@@ -13,20 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using EEGVis_V2.models;
-using EEGVis_V2.Viewmodels;
-
-namespace EEGVis_V2
+namespace EEGVis_V2.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for HomeView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class HomeView : UserControl
     {
-        public MainWindow()
+        public HomeView()
         {
             InitializeComponent();
-            this.DataContext = new NavigationViewModel();
         }
     }
 }
