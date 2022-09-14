@@ -20,7 +20,6 @@ namespace EEGVis_V2.Commands
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                navigationViewModel.CurrentPage = new SerialGraphViewModel();
             });
         }
     }

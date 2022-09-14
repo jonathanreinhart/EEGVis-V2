@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ using System.Windows.Shapes;
 
 using EEGVis_V2.models;
 using EEGVis_V2.Viewmodels;
+using EEGVis_V2.Views;
 
 namespace EEGVis_V2
 {
@@ -23,10 +25,25 @@ namespace EEGVis_V2
     /// </summary>
     public partial class MainWindow : Window
     {
+        private SerialGraphViewModel _serialGraphViewModel;
+
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = new NavigationViewModel();
+            _serialGraphViewModel = new SerialGraphViewModel();
+            NavigationMenuListBox.SelectionChanged += NavigationMenuListBox_SelectionChanged;
+        }
+
+        private void NavigationMenuListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if ((string)NavigationMenuListBox.SelectedItem == "Graph")
+            {
+                ViewContentControl.Content = new SerialGraphView(_serialGraphViewModel);
+            }
+            else
+            {
+                ViewContentControl.Content = new HomeView();
+            }
         }
     }
 }

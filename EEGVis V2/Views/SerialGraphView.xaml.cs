@@ -21,9 +21,10 @@ namespace EEGVis_V2.Views
     /// </summary>
     public partial class SerialGraphView : UserControl
     {
-        public SerialGraphView()
+        public SerialGraphView(SerialGraphViewModel dataContext)
         {
             InitializeComponent();
+            DataContext = dataContext;
         }
     }
 }

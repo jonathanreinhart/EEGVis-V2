@@ -1,6 +1,7 @@
 ﻿using EEGVis_V2.Commands;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,25 +11,48 @@ namespace EEGVis_V2.Viewmodels
 {
     public class NavigationViewModel : ViewModelBase
     {
-        public ICommand NextPage { get; set; }
-
-        private object currentPage;
-		public object CurrentPage
+		private string _currentView;
+		public string CurrentView
 		{
 			get
 			{
-				return currentPage;
+				return _currentView;
 			}
 			set
 			{
-				currentPage = value;
-				OnPropertyChanged(nameof(CurrentPage));
+				_currentView = value;
+				OnPropertyChanged(nameof(CurrentView));
 			}
 		}
 
-        public NavigationViewModel()
+		private object _currentViewObject;
+		public object CurrentViewObject
 		{
-			NextPage = new NextPageCommand(this);
+			get
+			{
+				return _currentViewObject;
+			}
+			set
+			{
+				_currentViewObject = value;
+				OnPropertyChanged(nameof(CurrentViewObject));
+			}
+		}
+
+		public NavigationViewModel()
+		{
+			PropertyChanged += NavigationViewModel_PropertyChanged;
+		}
+
+		private void NavigationViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == nameof(CurrentView))
+			{
+				if (CurrentView == "Graph")
+				{
+					
+				}
+			}
 		}
 	}
 }

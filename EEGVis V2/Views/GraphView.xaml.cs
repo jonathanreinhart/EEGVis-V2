@@ -140,7 +140,7 @@ namespace EEGVis_V2.Views
         #endregion
 
         public GraphView()
-        {   
+        {
             InitializeComponent();
         }
     }

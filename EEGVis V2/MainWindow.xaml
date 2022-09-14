@@ -9,26 +9,23 @@
         mc:Ignorable="d"
         Title="EEG Control" Height="450" Width="800">
 
-    <Window.Resources>
-
-        <DataTemplate DataType="{x:Type viewmodels:SerialGraphViewModel}">
-
-            <views:SerialGraphView/>
-
-        </DataTemplate>
-
-    </Window.Resources>
+    <Window.DataContext>
+        <viewmodels:NavigationViewModel/>
+    </Window.DataContext>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Button Content="next page" Command="{Binding NextPage}" Padding="10" Margin="10"/>
+        <ListBox x:Name="NavigationMenuListBox"
+            Style="{StaticResource NavigationListBoxStyle}"
+                ItemContainerStyle="{DynamicResource NavigationListBoxItemStyle}"
+                ItemTemplate="{DynamicResource NavigationDataTemplate}"
+                ItemsSource="{StaticResource NavigationMenuItems}"/>
+        <!--<Button Content="next page" Command="{Binding NextPage}" Padding="10" Margin="10"/>
         <ContentControl x:Name="Pages" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Content="{Binding CurrentPage}"/>
-    </Grid>
+        -->
+        <ContentControl x:Name="ViewContentControl" Grid.Column="1"/>
+        </Grid>
 </Window>
