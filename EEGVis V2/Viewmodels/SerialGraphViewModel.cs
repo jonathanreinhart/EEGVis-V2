@@ -53,18 +53,50 @@ namespace EEGVis_V2.Viewmodels
                 OnPropertyChanged(nameof(ConColor));
             }
         }
+
+        private int numChannels;
+        public int NumChannels
+        {
+            get
+            {
+                return numChannels;
+            }
+            set
+            {
+                numChannels = value;
+                OnPropertyChanged(nameof(NumChannels));
+            }
+        }
+
+        private int selectedPage;
+        public int SelectedPage
+        {
+            get
+            {
+                return selectedPage;
+            }
+            set
+            {
+                selectedPage = value;
+                OnPropertyChanged(nameof(SelectedPage));
+            }
+        }
         #endregion
 
         public ICommand Restart { get; }
+        public ICommand NextPage { get; }
         public SerialData SerialData_;
         private int _num_datapoints;
 
         public SerialGraphViewModel()
         {
+            SelectedPage = 0;
             SerialData_ = new SerialData("COM5");
             Restart = new RestartSerialCommand(this);
-            conColor = new SolidColorBrush(Color.FromRgb(152,0,5));
-            _num_datapoints = SerialData.NumDatapoints*5*SerialData.NumChannels;
+            NextPage = new NextPageCommand(this);
+            ConColor = new SolidColorBrush(Color.FromRgb(152,0,5));
+            NumChannels = SerialData.NumChannels;
+            _num_datapoints = SerialData.NumDatapoints*5*NumChannels;
 
             Points = new double[_num_datapoints];
             for (int i = 0; i < _num_datapoints; i++)

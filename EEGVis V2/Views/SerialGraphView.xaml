@@ -21,9 +21,12 @@
             <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
 
-        <Button Grid.Row="0" Grid.Column="0" Content="next page" Margin="10"/>
+        <Button Grid.Row="0" Grid.Column="0" Content="next page" Margin="10" Command="{Binding }"/>
         <Button Grid.Row="0" Grid.Column="2" Content="restart" Margin="10" Command="{Binding Restart}"/>
+        <!--
         <local:GraphView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" GraphData="{Binding Points}" NumChannels="7"/>
+        -->
+        <ContentControl x:Name="GraphContentControl" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"/>
         <Label Grid.Row="2" Grid.Column="0" Content="connected" Grid.ColumnSpan="3" Foreground="#B5BEC5" FontWeight="Bold" FontSize="14"
             HorizontalAlignment="Stretch" Margin="4" Name="label2"  Background="{Binding ConColor}" HorizontalContentAlignment="Center"/>
         

@@ -33,30 +33,6 @@ namespace EEGVis_V2.Views
     /// </summary>
     public partial class GraphView : UserControl
     {
-        /*
-        public PointCollection Points
-        {
-            get { return (PointCollection)GetValue(PointsProperty); }
-            set 
-            { 
-                SetValue(PointsProperty, value);
-            }
-        }
-
-        // Using a DependencyProperty as the backing store for Points.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PointsProperty =
-            DependencyProperty.Register("Points", typeof(PointCollection), typeof(GraphView), new PropertyMetadata(PointsChanged));
-
-        private static void PointsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if(d is GraphView)
-            {
-                GraphView graphView = d as GraphView;
-                graphView.linegraph.Points = (PointCollection)e.NewValue;
-            }
-        }
-        */
-        
         public double[][] DataYs;//y-values for each channel so: 0-dim: channels, 1-dim: data
         public bool FirstCall = true;
         private WpfPlot[] DataPlots;

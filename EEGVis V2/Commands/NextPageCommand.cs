@@ -9,18 +9,16 @@ namespace EEGVis_V2.Commands
 {
     internal class NextPageCommand : CommandBase
     {
-        private readonly NavigationViewModel navigationViewModel;
+        private readonly SerialGraphViewModel serialGraphViewModel;
 
-        public NextPageCommand(NavigationViewModel _navigationViewModel)
+        public NextPageCommand(SerialGraphViewModel _serialGraphViewModel)
         {
-            navigationViewModel = _navigationViewModel;
+            serialGraphViewModel = _serialGraphViewModel;
         }
 
         public override void Execute(object? parameter)
         {
-            App.Current.Dispatcher.Invoke(() =>
-            {
-            });
+            
         }
     }
 }
