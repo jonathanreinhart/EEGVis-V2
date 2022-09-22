@@ -21,7 +21,7 @@
             <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
 
-        <Button Grid.Row="0" Grid.Column="0" Content="next page" Margin="10" Command="{Binding }"/>
+        <Button Grid.Row="0" Grid.Column="0" Content="next page" Margin="10" Command="{Binding NextPage}"/>
         <Button Grid.Row="0" Grid.Column="2" Content="restart" Margin="10" Command="{Binding Restart}"/>
         <!--
         <local:GraphView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" GraphData="{Binding Points}" NumChannels="7"/>

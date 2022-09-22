@@ -31,10 +31,7 @@ namespace EEGVis_V2.Views
         // Using a DependencyProperty as the backing store for NumChannels.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty NumChannelsProperty =
             DependencyProperty.Register("NumChannels", typeof(int), typeof(SerialGraphView), new PropertyMetadata(0));
-
-
-
-
+        
         public int SelectedPage
         {
             get { return (int)GetValue(SelectedPageProperty); }
@@ -50,12 +47,32 @@ namespace EEGVis_V2.Views
             if (d is SerialGraphView sgv)
             {
                 GraphView newGraphView = new GraphView();
-                newGraphView.NumChannels = sgv.NumChannels;
+                newGraphView.NumChannels = sgv.SelectedPageNumChannels;
                 Binding graphDataBinding = new Binding("Points");
                 newGraphView.SetBinding(GraphView.GraphDataProperty, graphDataBinding);
                 sgv.GraphContentControl.Content = newGraphView;
             }
         }
+        
+        public int MaxChannels
+        {
+            get { return (int)GetValue(MaxChannelsProperty); }
+            set { SetValue(MaxChannelsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MaxChannels.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MaxChannelsProperty =
+            DependencyProperty.Register("MaxChannels", typeof(int), typeof(SerialGraphView), new PropertyMetadata(0));
+
+        public int SelectedPageNumChannels
+        {
+            get { return (int)GetValue(SelectedPageNumChannelsProperty); }
+            set { SetValue(SelectedPageNumChannelsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedPageNumChannels.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedPageNumChannelsProperty =
+            DependencyProperty.Register("SelectedPageNumChannels", typeof(int), typeof(SerialGraphView), new PropertyMetadata(1));
         #endregion
 
         public SerialGraphView(SerialGraphViewModel dataContext)
@@ -65,8 +82,12 @@ namespace EEGVis_V2.Views
             Binding numChannelsBinding = new Binding("NumChannels");
             Binding graphDataBinding = new Binding("Points");
             Binding selectedPageBinding = new Binding("SelectedPage");
+            Binding SelectedPageNumChannelsBinding = new Binding("SelectedPageNumChannels");
+            Binding maxChannelsBinding = new Binding("MaxChannels");
             SetBinding(NumChannelsProperty, numChannelsBinding);
             SetBinding(SelectedPageProperty, selectedPageBinding);
+            SetBinding(SelectedPageNumChannelsProperty, SelectedPageNumChannelsBinding);
+            SetBinding(MaxChannelsProperty, maxChannelsBinding);
             GraphView newGraphView = new GraphView();
             newGraphView.NumChannels = NumChannels;
             newGraphView.SetBinding(GraphView.GraphDataProperty, graphDataBinding);

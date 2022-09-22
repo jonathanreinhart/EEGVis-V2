@@ -31,10 +31,16 @@ namespace EEGVis_V2
         {
             InitializeComponent();
             _serialGraphViewModel = new SerialGraphViewModel();
+            updateWindow();
             NavigationMenuListBox.SelectionChanged += NavigationMenuListBox_SelectionChanged;
         }
 
         private void NavigationMenuListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            updateWindow();
+        }
+
+        private void updateWindow()
         {
             if ((string)NavigationMenuListBox.SelectedItem == "Graph")
             {

@@ -37,6 +37,7 @@ namespace EEGVis_V2.Viewmodels
             set
             {
                 points = value;
+                OnPropertyChanged(nameof(Points));
             }
         }
 
@@ -81,32 +82,85 @@ namespace EEGVis_V2.Viewmodels
                 OnPropertyChanged(nameof(SelectedPage));
             }
         }
+
+        //max channels per page
+        private int maxChannels;
+        public int MaxChannels
+        {
+            get
+            {
+                return maxChannels;
+            }
+            set
+            {
+                maxChannels = value;
+                OnPropertyChanged(nameof(MaxChannels));
+            }
+        }
+
+        private int _selectedPageNumChannels;
+        public int SelectedPageNumChannels
+        {
+            get
+            {
+                return _selectedPageNumChannels;
+            }
+            set
+            {
+                _selectedPageNumChannels = value;
+                OnPropertyChanged(nameof(SelectedPageNumChannels));
+            }
+        }
         #endregion
 
         public ICommand Restart { get; }
         public ICommand NextPage { get; }
+        public int NumPages;
         public SerialData SerialData_;
         private int _num_datapoints;
+        private int _cur_start_channel;
 
         public SerialGraphViewModel()
         {
+            MaxChannels = 6;
             SelectedPage = 0;
+            NumChannels = SerialData.NumChannels;
+            SelectedPageNumChannels = getPageNumChannels(0);
             SerialData_ = new SerialData("COM5");
             Restart = new RestartSerialCommand(this);
             NextPage = new NextPageCommand(this);
             ConColor = new SolidColorBrush(Color.FromRgb(152,0,5));
-            NumChannels = SerialData.NumChannels;
-            _num_datapoints = SerialData.NumDatapoints*5*NumChannels;
-
-            Points = new double[_num_datapoints];
-            for (int i = 0; i < _num_datapoints; i++)
-            {
-                Points[i] = 0;
-            }
+            NumPages = (int)Math.Ceiling((double)NumChannels / MaxChannels);
+            
             Thread plotThread = new Thread(PlotData);
             plotThread.Start();
         }
 
+        /// <summary>
+        /// Gets the number of channels on the selected page and sets required variables
+        /// </summary>
+        /// <param name="page"></param>
+        /// <returns>number of channels on selected page</returns>
+        public int getPageNumChannels(int page)
+        {
+            int reamainingChannels = NumChannels - page * MaxChannels;
+            int pageNumChannels = reamainingChannels > 0 ? reamainingChannels : MaxChannels;
+            _num_datapoints = SerialData.NumDatapoints * 5 * pageNumChannels;
+            _cur_start_channel = page * MaxChannels;
+
+            double[] newData = new double[_num_datapoints];
+            for (int i = 0; i < _num_datapoints; i++)
+            {
+                newData[i] = 0;
+            }
+            Points = newData;
+            return pageNumChannels;
+        }
+
+        /// <summary>
+        /// save the data from last 5 seconds and make it available to the GraphView
+        /// </summary>
+        /// <param name="obj"></param>
         private void PlotData(object? obj)
         {
             while (!SerialData_.connected && !App.Current.Dispatcher.HasShutdownStarted) ;
@@ -123,17 +177,21 @@ namespace EEGVis_V2.Viewmodels
                         App.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                         {
                             double[] newData = new double[_num_datapoints];
-                            int newDataNum = (SerialData.NumChannels * SerialData.NumDatapoints / 10);
+                            int newDataNum = (_num_datapoints/5/10);
                             for (int i = 0; i < Points.Length - newDataNum; i++)
                             {
                                 newData[i] = Points[i + newDataNum];
                             }
-                            for (int i = Points.Length - newDataNum; i < Points.Length; i++)
+                            for (int i = 0; i < newDataNum; i++)
                             {
-                                newData[i] = SerialData_.CurData[i - Points.Length + newDataNum];
+                                //save new points if it's the channel we are searching for
+                                if (i % NumChannels >= _cur_start_channel && i % NumChannels < _cur_start_channel + MaxChannels)
+                                {
+                                    int pos = i + Points.Length - newDataNum;
+                                    newData[i + Points.Length - newDataNum] = SerialData_.CurData[i];
+                                }
                             }
                             Points = newData;
-                            OnPropertyChanged(nameof(Points));
                         }));
                     }
                 }

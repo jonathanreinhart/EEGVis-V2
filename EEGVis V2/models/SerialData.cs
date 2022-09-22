@@ -23,7 +23,7 @@ namespace EEGVis_V2.models
         public bool connected = false;
         public bool reconnecting = false;
         public const int NumDatapoints = 200;//datapoints in 1s
-        public const int NumChannels = 7;
+        public const int NumChannels = 1;
 
         private List<double> _curData;
         public List<double> CurData

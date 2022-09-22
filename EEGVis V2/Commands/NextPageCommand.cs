@@ -18,7 +18,12 @@ namespace EEGVis_V2.Commands
 
         public override void Execute(object? parameter)
         {
-            
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                int newPage = (serialGraphViewModel.SelectedPage + 1) % serialGraphViewModel.NumPages;
+                serialGraphViewModel.SelectedPageNumChannels = serialGraphViewModel.getPageNumChannels(newPage);
+                serialGraphViewModel.SelectedPage = newPage;
+            });
         }
     }
 }
