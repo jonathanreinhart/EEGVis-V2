@@ -4,19 +4,33 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:EEGVis_V2.Views"
+             xmlns:viewmodels ="clr-namespace:EEGVis_V2.Viewmodels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.DataContext>
+        <viewmodels:AcquisitionViewModel/>
+    </UserControl.DataContext>
     <Grid>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="3*"/>
             <RowDefinition Height="2*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Image Grid.Row="0" Grid.Column="0" Height = "Auto" Source = "../rsc/Acquisition/lamp.png"  
+        <Image Grid.Row="0" Grid.Column="0" Height = "Auto" Source = "{Binding ImageSource}"  
                Margin = "30 50 30 30"/>
-        <TextBlock Grid.Row = "1" Grid.Column="0" Text="Lamp" TextAlignment="Center" 
+        <TextBlock Grid.Row = "1" Grid.Column="0" Text="{Binding Label}" TextAlignment="Center" 
                    VerticalAlignment="Center" FontSize="70" FontFamily="Franklin Gothic Medium"/>
+        <TextBlock Grid.Row = "2" Grid.Column="0" TextAlignment="Right" 
+                   VerticalAlignment="Center" FontSize="10" FontFamily="Franklin Gothic Medium">
+            <Hyperlink NavigateUri="{Binding AttributionLink}" RequestNavigate="Hyperlink_RequestNavigate">
+                <TextBlock Grid.Row = "1" Grid.Column="0" Text="{Binding AttributionText}" TextAlignment="Center" 
+                   VerticalAlignment="Center" FontSize="10" FontFamily="Franklin Gothic Medium"/>
+            </Hyperlink>
+        </TextBlock>
     </Grid>
 </UserControl>

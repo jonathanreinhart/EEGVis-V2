@@ -9,9 +9,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="rsc\Acquisition\computer.png" />
+    <None Remove="rsc\Acquisition\eight.png" />
+    <None Remove="rsc\Acquisition\five.png" />
+    <None Remove="rsc\Acquisition\four.png" />
+    <None Remove="rsc\Acquisition\greenhouse.png" />
+    <None Remove="rsc\Acquisition\heater.png" />
+    <None Remove="rsc\Acquisition\humidity.png" />
     <None Remove="rsc\Acquisition\lamp.png" />
-    <None Remove="rsc\Acquisition\power-button.png" />
-    <None Remove="rsc\Acquisition\power.png" />
+    <None Remove="rsc\Acquisition\nine.png" />
+    <None Remove="rsc\Acquisition\off.png" />
+    <None Remove="rsc\Acquisition\on.png" />
+    <None Remove="rsc\Acquisition\one.png" />
+    <None Remove="rsc\Acquisition\pressure.png" />
+    <None Remove="rsc\Acquisition\seven.png" />
+    <None Remove="rsc\Acquisition\six.png" />
+    <None Remove="rsc\Acquisition\speaker.png" />
+    <None Remove="rsc\Acquisition\surveillance camera.png" />
+    <None Remove="rsc\Acquisition\temperature.png" />
+    <None Remove="rsc\Acquisition\three.png" />
+    <None Remove="rsc\Acquisition\two.png" />
+    <None Remove="rsc\Acquisition\weather forecast.png" />
+    <None Remove="rsc\Acquisition\zero.png" />
     <None Remove="rsc\EEGIcon.png" />
     <None Remove="rsc\GraphIcon.png" />
     <None Remove="rsc\homeicon.png" />
@@ -28,9 +47,28 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="rsc\Acquisition\computer.png" />
+    <Resource Include="rsc\Acquisition\eight.png" />
+    <Resource Include="rsc\Acquisition\five.png" />
+    <Resource Include="rsc\Acquisition\four.png" />
+    <Resource Include="rsc\Acquisition\greenhouse.png" />
+    <Resource Include="rsc\Acquisition\heater.png" />
+    <Resource Include="rsc\Acquisition\humidity.png" />
     <Resource Include="rsc\Acquisition\lamp.png" />
-    <Resource Include="rsc\Acquisition\power-button.png" />
-    <Resource Include="rsc\Acquisition\power.png" />
+    <Resource Include="rsc\Acquisition\nine.png" />
+    <Resource Include="rsc\Acquisition\off.png" />
+    <Resource Include="rsc\Acquisition\on.png" />
+    <Resource Include="rsc\Acquisition\one.png" />
+    <Resource Include="rsc\Acquisition\pressure.png" />
+    <Resource Include="rsc\Acquisition\seven.png" />
+    <Resource Include="rsc\Acquisition\six.png" />
+    <Resource Include="rsc\Acquisition\speaker.png" />
+    <Resource Include="rsc\Acquisition\surveillance camera.png" />
+    <Resource Include="rsc\Acquisition\temperature.png" />
+    <Resource Include="rsc\Acquisition\three.png" />
+    <Resource Include="rsc\Acquisition\two.png" />
+    <Resource Include="rsc\Acquisition\weather forecast.png" />
+    <Resource Include="rsc\Acquisition\zero.png" />
     <Resource Include="rsc\Icons\EEGIcon.png" />
     <Resource Include="rsc\Icons\GraphIcon.png" />
     <Resource Include="rsc\Icons\HomeIcon.png" />
