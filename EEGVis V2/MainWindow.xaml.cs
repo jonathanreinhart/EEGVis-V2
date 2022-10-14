@@ -42,13 +42,17 @@ namespace EEGVis_V2
 
         private void updateWindow()
         {
-            if ((string)NavigationMenuListBox.SelectedItem == "Graph")
+            switch ((string)NavigationMenuListBox.SelectedItem)
             {
-                ViewContentControl.Content = new SerialGraphView(_serialGraphViewModel);
-            }
-            else
-            {
-                ViewContentControl.Content = new HomeView();
+                case "Acquisition":
+                    ViewContentControl.Content = new AcquisitionView();
+                    break;
+                case "Graph":
+                    ViewContentControl.Content = new SerialGraphView(_serialGraphViewModel);
+                    break;
+                default:
+                    ViewContentControl.Content = new HomeView();
+                    break;
             }
         }
     }

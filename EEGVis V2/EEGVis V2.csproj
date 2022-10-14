@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="rsc\Acquisition\lamp.png" />
+    <None Remove="rsc\Acquisition\power-button.png" />
+    <None Remove="rsc\Acquisition\power.png" />
+    <None Remove="rsc\EEGIcon.png" />
     <None Remove="rsc\GraphIcon.png" />
     <None Remove="rsc\homeicon.png" />
   </ItemGroup>
@@ -24,8 +28,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="rsc\GraphIcon.png" />
-    <Resource Include="rsc\HomeIcon.png" />
+    <Resource Include="rsc\Acquisition\lamp.png" />
+    <Resource Include="rsc\Acquisition\power-button.png" />
+    <Resource Include="rsc\Acquisition\power.png" />
+    <Resource Include="rsc\Icons\EEGIcon.png" />
+    <Resource Include="rsc\Icons\GraphIcon.png" />
+    <Resource Include="rsc\Icons\HomeIcon.png" />
   </ItemGroup>
 
 </Project>

@@ -92,10 +92,13 @@
             <Image x:Name="Image" Height="50" Width="50" Margin="10"/>
             <DataTemplate.Triggers>
                 <DataTrigger Binding="{Binding}" Value="Home">
-                    <Setter TargetName="Image" Property="Source" Value="rsc/HomeIcon.png"/>
+                    <Setter TargetName="Image" Property="Source" Value="rsc/Icons/HomeIcon.png"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding}" Value="Graph">
-                    <Setter TargetName="Image" Property="Source" Value="rsc/GraphIcon.png"/>
+                    <Setter TargetName="Image" Property="Source" Value="rsc/Icons/GraphIcon.png"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding}" Value="Acquisition">
+                    <Setter TargetName="Image" Property="Source" Value="rsc/Icons/EEGIcon.png"/>
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
@@ -103,15 +106,19 @@
         <x:Array x:Key="NavigationMenuItems" Type="system:String">
             <system:String>Home</system:String>
             <system:String>Graph</system:String>
+            <system:String>Acquisition</system:String>
         </x:Array>
-
+        <!--
         <DataTemplate x:Key="HomeViewTemplate">
             <views:HomeView/>
         </DataTemplate>
         <DataTemplate x:Key="GraphViewTemplate">
             <views:SerialGraphView/>
         </DataTemplate>
-
+        <DataTemplate x:Key="GraphViewTemplate">
+            <views:AcquisitionView/>
+        </DataTemplate>
+        -->
         <SolidColorBrush x:Key="Button.Static.Background" Color="#1F77B4"/>
         <SolidColorBrush x:Key="Button.Static.Foreground" Color="#B5BEC5"/>
         <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
