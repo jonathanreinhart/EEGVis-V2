@@ -37,6 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Appccelerate.EventBroker" Version="4.0.0" />
     <PackageReference Include="InteractiveDataDisplay.WPF" Version="1.0.0" />
     <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
     <PackageReference Include="ScottPlot.WPF" Version="4.1.57" />

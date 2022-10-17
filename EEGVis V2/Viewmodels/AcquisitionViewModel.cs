@@ -1,7 +1,9 @@
-﻿using LiveCharts.Wpf;
+﻿using EEGVis_V2.models;
+using LiveCharts.Wpf;
 using ScottPlot.Drawing.Colormaps;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -100,44 +102,70 @@ namespace EEGVis_V2.Viewmodels
             {"greenhouse", "Freepik"},
             
         };
-        #endregion
-        
+		#endregion
+
+		public static int SecondsData = 5;
+
+        private double[] _data;
         private Random _rnd = new Random();
-		private String _previousLabel;
+		private string _previousLabel;
+		//counts seconds since last label change
+		private int _cur_sec = 0;
+        private SerialGraphViewModel _serialGraphViewModel;
+        private const string _data_file = "../../../models/AcquisitionData.csv";
 
-        public AcquisitionViewModel()
+        public AcquisitionViewModel(SerialGraphViewModel serialGraphViewModel)
 		{
-            ChangeLabel("lamp");
-            Thread controlThread = new Thread(ShowLabels);
-			controlThread.Start();
-        }
+            _data = new double[SecondsData * SerialData.NumDatapoints];
 
-		private void ShowLabels(object? obj)
-		{
-            for(int i = 0; i < 100; i++)
+			//set up csv file
+			System.IO.File.WriteAllText(_data_file, "label,");
+            for (int i = 0; i < SerialData.NumDatapoints * SecondsData; i++)
 			{
-                Thread.Sleep(2000);
-                ChangeLabel();
+                System.IO.File.AppendAllText(_data_file, "P" + i + ",");
             }
+			System.IO.File.AppendAllText(_data_file, Environment.NewLine);
+
+                ChangeLabel("lamp");
+			_serialGraphViewModel = serialGraphViewModel;
+            _serialGraphViewModel.PropertyChanged += SerialGraphViewModel_PropertyChanged;
         }
 
-        public void ChangeLabel(string? label = null)
+		private void SerialGraphViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "RawData")
+			{
+				if (_cur_sec >= SecondsData * 10)
+				{
+					//because we just set SecondsData to 5, we can just take data as it is for now
+					_data = _serialGraphViewModel.RawData;
+					System.IO.File.AppendAllText(_data_file, _previousLabel + ",");
+                    System.IO.File.AppendAllText(_data_file, string.Join(",", _data) + Environment.NewLine);
+                    
+                    ChangeLabel();
+					_cur_sec = 0;
+                }
+				_cur_sec++;
+			}
+		}
+
+		public void ChangeLabel(string? label = null)
 		{
             //get random label
             if (label == null)
                 label = _authors.Keys.ElementAt(_rnd.Next(_authors.Count));
 
-			//don't show the same label two times
+			//avoid showing the same label two times
 			while (label == _previousLabel)
 			{
                 label = _authors.Keys.ElementAt(_rnd.Next(_authors.Count));
             }
 
-                Trace.WriteLine(label);
+            Trace.WriteLine("change label: " + label);
             Label = label;
             ImageSource = "../rsc/Acquisition/" + label + ".png";
             AttributionLink = "https://www.flaticon.com/free-icons/" + label;
-            AttributionText = "Lamp icon created by " + _authors[label] + " -Flaticon";
+            AttributionText = label + " icon created by " + _authors[label] + " -Flaticon";
 			_previousLabel = label;
         }
 

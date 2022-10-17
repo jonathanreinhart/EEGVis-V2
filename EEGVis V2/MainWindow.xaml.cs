@@ -42,12 +42,17 @@ namespace EEGVis_V2
 
         private void updateWindow()
         {
+            _serialGraphViewModel.UpdateData = false;
+            _serialGraphViewModel.PlotSelected = false;
             switch ((string)NavigationMenuListBox.SelectedItem)
             {
                 case "Acquisition":
-                    ViewContentControl.Content = new AcquisitionView();
+                    _serialGraphViewModel.UpdateData = true;
+                    ViewContentControl.Content = new AcquisitionView(_serialGraphViewModel);
                     break;
                 case "Graph":
+                    _serialGraphViewModel.UpdateData = true;
+                    _serialGraphViewModel.PlotSelected = true;
                     ViewContentControl.Content = new SerialGraphView(_serialGraphViewModel);
                     break;
                 default:

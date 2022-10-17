@@ -69,15 +69,15 @@ namespace EEGVis_V2.Views
                 graphView.Dispatcher.Invoke(() =>
                 {
                     double[] newData = graphView.GraphData;
-                    Trace.WriteLine(newData.Length);
+                    //Trace.WriteLine(newData.Length);
                     if(newData.Length>0)
                     {
-                        Trace.WriteLine(newData.Length);
+                        //Trace.WriteLine(newData.Length);
                         graphView.NumCall++;
                         //init every data-array
                         if (graphView.FirstCall)
                         {
-                            Trace.WriteLine("starting init");
+                            //Trace.WriteLine("starting init");
                             graphView.DataPlots = new WpfPlot[graphView.NumChannels];
                             graphView.DataYs = new double[graphView.NumChannels][];
                             // add one graph for each channel
@@ -101,7 +101,7 @@ namespace EEGVis_V2.Views
                             }
                             graphView.FirstCall = false;
                         }
-                        Trace.WriteLine(newData.Length);
+                        //Trace.WriteLine(newData.Length);
                         for (int i = 0; i < newData.Length; i++)
                         {
                             graphView.DataYs[i % graphView.NumChannels][i / graphView.NumChannels] = newData[i];

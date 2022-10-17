@@ -21,13 +21,19 @@ using ScottPlot.Drawing.Colormaps;
 using System.Windows.Media;
 using System.Windows.Input;
 using EEGVis_V2.Commands;
+using Appccelerate.EventBroker;
+using System.Security.Policy;
 
 namespace EEGVis_V2.Viewmodels
 {
     public class SerialGraphViewModel : ViewModelBase
     {
         #region properties
+
         private double[] points;
+        /// <summary>
+        /// The data to be displayed in the graph on the selected page
+        /// </summary>
         public double[] Points
         {
             get
@@ -38,6 +44,23 @@ namespace EEGVis_V2.Viewmodels
             {
                 points = value;
                 OnPropertyChanged(nameof(Points));
+            }
+        }
+
+        private double[] _rawData;
+        /// <summary>
+        /// Data from all channels
+        /// </summary>
+        public double[] RawData
+        {
+            get
+            {
+                return _rawData;
+            }
+            set
+            {
+                _rawData = value;
+                OnPropertyChanged(nameof(RawData));
             }
         }
 
@@ -117,8 +140,11 @@ namespace EEGVis_V2.Viewmodels
         public ICommand NextPage { get; }
         public int NumPages;
         public SerialData SerialData_;
+        public bool UpdateData;
+        public bool PlotSelected;
         private int _num_datapoints;
         private int _cur_start_channel;
+        private int _num_raw_datapoints;
 
         public SerialGraphViewModel()
         {
@@ -131,7 +157,15 @@ namespace EEGVis_V2.Viewmodels
             NextPage = new NextPageCommand(this);
             ConColor = new SolidColorBrush(Color.FromRgb(152,0,5));
             NumPages = (int)Math.Ceiling((double)NumChannels / MaxChannels);
-            
+            //make Raw data size so that it can hold SecondsRawData seconds of data of all the channels
+            _num_raw_datapoints = SerialData.NumChannels * SerialData.NumDatapoints * AcquisitionViewModel.SecondsData;
+            double[] newData = new double[_num_raw_datapoints];
+            for (int i = 0; i < _num_raw_datapoints; i++)
+            {
+                newData[i] = 0;
+            }
+            RawData = newData;
+
             Thread plotThread = new Thread(PlotData);
             plotThread.Start();
         }
@@ -168,30 +202,55 @@ namespace EEGVis_V2.Viewmodels
             {
                 ConColor = new SolidColorBrush(Color.FromRgb(0, 155, 31));
             }));
+            //while Window is not closing
             while (App.Current != null && !SerialData_.closing)
             {
-                if (!App.Current.Dispatcher.HasShutdownStarted)
+                //check if data has to be updated
+                if (UpdateData && !App.Current.Dispatcher.HasShutdownStarted)
                 {
                     if (SerialData_.newDataAvailable)
                     {
                         App.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                         {
-                            double[] newData = new double[_num_datapoints];
-                            int newDataNum = (_num_datapoints/5/10);
-                            for (int i = 0; i < Points.Length - newDataNum; i++)
+                            //check if data has to be plotted
+                            if (PlotSelected)
                             {
-                                newData[i] = Points[i + newDataNum];
-                            }
-                            for (int i = 0; i < newDataNum; i++)
-                            {
-                                //save new points if it's the channel we are searching for
-                                if (i % NumChannels >= _cur_start_channel && i % NumChannels < _cur_start_channel + MaxChannels)
+                                //updated data
+                                double[] newData = new double[_num_datapoints];
+                                //number of datapoints that are new
+                                int newDataNum = (_num_datapoints / 5 / 10);
+                                for (int i = 0; i < Points.Length - newDataNum; i++)
                                 {
-                                    int pos = i + Points.Length - newDataNum;
-                                    newData[i + Points.Length - newDataNum] = SerialData_.CurData[i];
+                                    newData[i] = Points[i + newDataNum];
                                 }
+                                for (int i = 0; i < newDataNum; i++)
+                                {
+                                    //save new points if it's the channel we are searching for
+                                    if (i % NumChannels >= _cur_start_channel && i % NumChannels < _cur_start_channel + MaxChannels)
+                                    {
+                                        int pos = i + Points.Length - newDataNum;
+                                        newData[i + Points.Length - newDataNum] = SerialData_.CurData[i];
+                                    }
+                                }
+                                Points = newData;
                             }
-                            Points = newData;
+                            //if not, save the data to RawData
+                            else
+                            {
+                                //updated data
+                                double[] newData = new double[_num_raw_datapoints];
+                                //number of datapoints that are new
+                                int newDataNum = (_num_raw_datapoints / AcquisitionViewModel.SecondsData / 10);
+                                for (int i = 0; i < RawData.Length - newDataNum; i++)
+                                {
+                                    newData[i] = RawData[i + newDataNum];
+                                }
+                                for (int i = 0; i < newDataNum; i++)
+                                {
+                                    newData[i + RawData.Length - newDataNum] = SerialData_.CurData[i];
+                                }
+                                RawData = newData;
+                            }
                         }));
                     }
                 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EEGVis_V2.Viewmodels;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -21,9 +22,11 @@ namespace EEGVis_V2.Views
     /// </summary>
     public partial class AcquisitionView : UserControl
     {
-        public AcquisitionView()
+        public AcquisitionView(SerialGraphViewModel serialGraphViewModel)
         {
             InitializeComponent();
+            //initialize the viewmodel and pass the current data ViewModel
+            DataContext = new AcquisitionViewModel(serialGraphViewModel);
         }
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
