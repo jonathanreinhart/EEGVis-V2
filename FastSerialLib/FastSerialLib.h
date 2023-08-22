@@ -6,6 +6,7 @@
 #include <chrono>
 #include <iostream>
 #include <string>
+#include <vector>
 
 namespace FastSerialLib {
 	class FastSerial {
@@ -16,6 +17,8 @@ namespace FastSerialLib {
 		__declspec(dllexport) static int getString(char* outArray);
 		__declspec(dllexport) static void close();
 		__declspec(dllexport) static bool writeStringToSerial(std::string output);
+		
+		__declspec(dllexport) static std::vector<uint32_t> get24Array();
 
 	private:
 		static HANDLE serialHandle;

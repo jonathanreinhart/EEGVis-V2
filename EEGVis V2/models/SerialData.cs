@@ -23,7 +23,9 @@ namespace EEGVis_V2.models
         public bool connected = false;
         public bool reconnecting = false;
         public const int NumDatapoints = 200;//datapoints in 1s
-        public const int NumChannels = 1;
+        public const int NumChannels = 24;
+        public const int LenDatapoint = 7;
+        public const int LenDataPacket = NumChannels * NumDatapoints / 10;
 
         private List<double> _curData;
         public List<double> CurData
@@ -36,7 +38,9 @@ namespace EEGVis_V2.models
             }
             set { _curData = value; }
         }
-        
+
+        private List<UInt32> _lastData;
+
 
         private string comPort;
         private int baudrate;
@@ -49,7 +53,7 @@ namespace EEGVis_V2.models
         /// <summary>
         /// Initializes a new instance of the <see cref="SerialData"/> class.
         /// </summary>
-        public SerialData(string _comPort, int _baudrate = 115200)
+        public SerialData(string _comPort, int _baudrate = 2000000)
         {
             comPort = _comPort;
             baudrate = _baudrate;
@@ -58,6 +62,7 @@ namespace EEGVis_V2.models
             {
                 CurData.Add(0);
             }
+            _lastData = new List<UInt32>();
             _writer = new StreamWriter(_data_file);
             _writer.WriteLine("data");
             fs.init(comPort, baudrate, buffersize);
@@ -66,7 +71,7 @@ namespace EEGVis_V2.models
         }
 
         /// <summary>
-        /// Gets Serial data and saves it in <see cref="curData"/>
+        /// Gets Serial data and saves it in <see cref="CurData"/>
         /// </summary>
         /// <param name="obj"></param>
         private void GetData(object? obj)
@@ -85,19 +90,35 @@ namespace EEGVis_V2.models
             {
                 if (fs.available())
                 {
-                    string data = fs.getString();
+                    UInt32[] data = fs.get24Array();
+
+                    Debug.WriteLine("data: " + data.Length);
                     if (!firstString)
                     {
-                        //divide string in groups of five, and save
-                        //in curData as double
-                        for (int i = 0; i < NumChannels * NumDatapoints / 10; i++)
+                        if (data.Length == LenDataPacket)
                         {
-                            string dataPoint = data.Substring(i * 5, 5);
-                            CurData[i] = double.Parse(dataPoint);
-                            //write current data to file
-                            _writer.WriteLine(CurData[i].ToString());
+                            // save new raw data in _lastData
+                            if (_lastData.Count() >= NumChannels * NumDatapoints)
+                            {
+                                _lastData.RemoveRange(0, LenDataPacket);
+                            }
+
+                            for (int i = 0; i < data.Count(); i++)
+                            {
+                                _lastData.Add(data[i]);
+                            }
+                            
+                            List<UInt32> data_filtered = FIRFilter.Filter24(_lastData);
+
+                            // save filtered data in CurData and data write to csv file
+                            for (int i = 0; i < LenDataPacket; i++)
+                            {
+                                CurData[i] = data_filtered[i];
+                                //write current data to file
+                                _writer.WriteLine(CurData[i].ToString());
+                            }
+                            newDataAvailable = true;
                         }
-                        newDataAvailable = true;
                     }
                     else 
                     {

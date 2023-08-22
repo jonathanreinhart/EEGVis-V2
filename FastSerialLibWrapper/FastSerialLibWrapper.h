@@ -8,6 +8,7 @@
 #include <msclr\marshal_cppstd.h>
 
 using namespace System;
+using namespace System::Runtime::InteropServices;
 
 namespace FastSerialLibWrapper {
 	public ref class FastSerial
@@ -19,6 +20,9 @@ namespace FastSerialLibWrapper {
 		String^ getString();
 		void close();
 		bool writeStringToSerial(String^ output);
+
+		array<UInt32>^ get24Array();
+		
 	private:
 		std::string convertNetStringToCString(String^ output);
 	};

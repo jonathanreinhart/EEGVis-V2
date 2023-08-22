@@ -8,6 +8,7 @@ namespace FastSerialLib {
     char* FastSerial::dataReadBuffer;
     std::string FastSerial::curString;
     int FastSerial::available_lines;
+    
     /// <summary>
     /// Opens Serial port on comPort with baudrate of baudrate
     /// </summary>
@@ -93,6 +94,35 @@ namespace FastSerialLib {
             return outString.length();
         }
         return 0;
+    }
+
+    /// <summary>
+    /// converts byte String from Serial into a vector of 24 bit numbers
+    /// </summary>
+    /// <returns> Vector containing the 24 bit numbers or {} if no data is available </returns>
+    std::vector<uint32_t> FastSerial::get24Array() {
+        int line_end = curString.find('\n');
+        //if there exists \n in curString
+        if (line_end != -1) {
+            std::vector<uint32_t> outVec;
+
+            // convert the data into 24 bit numbers and return + erase line from curString
+            std::string outString = curString;
+            outString.erase(line_end + 1);
+            for (int i = 0; i < outString.length() - 4; i += 4) {
+                uint32_t curNum = 0;
+                // MSB first
+                curNum |= ((uint32_t)outString[i] - 64) << 18;
+                curNum |= ((uint32_t)outString[i + 1] - 64) << 12;
+                curNum |= ((uint32_t)outString[i + 2] - 64) << 6;
+                curNum |= (uint32_t)outString[i + 3] - 64;
+                outVec.push_back(curNum);
+            }
+            curString.erase(0, line_end + 1);
+            available_lines--;
+            return outVec;
+        }
+        return {};
     }
 
     /// <summary>

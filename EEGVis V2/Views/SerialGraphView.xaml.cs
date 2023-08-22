@@ -22,15 +22,6 @@ namespace EEGVis_V2.Views
     public partial class SerialGraphView : UserControl
     {
         #region propdp
-        public int NumChannels
-        {
-            get { return (int)GetValue(NumChannelsProperty); }
-            set { SetValue(NumChannelsProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for NumChannels.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty NumChannelsProperty =
-            DependencyProperty.Register("NumChannels", typeof(int), typeof(SerialGraphView), new PropertyMetadata(0));
         
         public int SelectedPage
         {
@@ -48,21 +39,12 @@ namespace EEGVis_V2.Views
             {
                 GraphView newGraphView = new GraphView();
                 newGraphView.NumChannels = sgv.SelectedPageNumChannels;
+                newGraphView.CurStartChannel = sgv.CurStartChannel;
                 Binding graphDataBinding = new Binding("Points");
                 newGraphView.SetBinding(GraphView.GraphDataProperty, graphDataBinding);
                 sgv.GraphContentControl.Content = newGraphView;
             }
         }
-        
-        public int MaxChannels
-        {
-            get { return (int)GetValue(MaxChannelsProperty); }
-            set { SetValue(MaxChannelsProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for MaxChannels.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty MaxChannelsProperty =
-            DependencyProperty.Register("MaxChannels", typeof(int), typeof(SerialGraphView), new PropertyMetadata(0));
 
         public int SelectedPageNumChannels
         {
@@ -73,23 +55,37 @@ namespace EEGVis_V2.Views
         // Using a DependencyProperty as the backing store for SelectedPageNumChannels.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedPageNumChannelsProperty =
             DependencyProperty.Register("SelectedPageNumChannels", typeof(int), typeof(SerialGraphView), new PropertyMetadata(1));
+
+
+
+        public int CurStartChannel
+        {
+            get { return (int)GetValue(CurStartChannelProperty); }
+            set { SetValue(CurStartChannelProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CurStartChannel.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CurStartChannelProperty =
+            DependencyProperty.Register("CurStartChannel", typeof(int), typeof(SerialGraphView), new PropertyMetadata(0));
+
+
+
         #endregion
 
         public SerialGraphView(SerialGraphViewModel dataContext)
         {
             InitializeComponent();
             DataContext = dataContext;
-            Binding numChannelsBinding = new Binding("NumChannels");
             Binding graphDataBinding = new Binding("Points");
             Binding selectedPageBinding = new Binding("SelectedPage");
             Binding SelectedPageNumChannelsBinding = new Binding("SelectedPageNumChannels");
-            Binding maxChannelsBinding = new Binding("MaxChannels");
-            SetBinding(NumChannelsProperty, numChannelsBinding);
+            Binding CurStartChannelBinding = new Binding("CurStartChannel");
             SetBinding(SelectedPageProperty, selectedPageBinding);
             SetBinding(SelectedPageNumChannelsProperty, SelectedPageNumChannelsBinding);
-            SetBinding(MaxChannelsProperty, maxChannelsBinding);
+            SetBinding(CurStartChannelProperty, CurStartChannelBinding);
             GraphView newGraphView = new GraphView();
-            newGraphView.NumChannels = NumChannels;
+            newGraphView.NumChannels = SelectedPageNumChannels;
+            newGraphView.CurStartChannel = CurStartChannel;
             newGraphView.SetBinding(GraphView.GraphDataProperty, graphDataBinding);
             GraphContentControl.Content = newGraphView;
         }

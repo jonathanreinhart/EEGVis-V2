@@ -39,6 +39,22 @@ String^ FastSerial::getString() {
     return managedString;
 }
 
+array<UInt32>^ FastSerial::get24Array() {
+    // Call the C++ function from the original C++ code
+    std::vector<uint32_t> dataVector = FastSerialLib::FastSerial::get24Array();
+
+    std::cout << dataVector.size() << std::endl;
+
+    // Convert the vector to a managed array
+    array<UInt32>^ dataArray = gcnew array<UInt32>(dataVector.size());
+    
+	for (int i = 0; i < dataVector.size(); i++) {
+		dataArray[i] = dataVector[i];
+	}
+    
+    return dataArray;
+}
+
 /// <summary>
 /// Checks if Serial data is available and pushes data to a string for later use
 /// </summary>

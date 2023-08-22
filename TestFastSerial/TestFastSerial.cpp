@@ -8,10 +8,10 @@
 
 int main()
 {
-    namespace FS = FastSerialLib;
-    std::string comPort = "COM5";
-    int baudrate = 115200;
-    FS::FastSerial::init(comPort, baudrate);
+    namespace FS = TestFastSerial;
+    std::string comPort = "COM4";
+    int baudrate = 2000000;
+    FS::FastSerial::init(comPort, baudrate, 1);
     char output[1];
     int len;
 
@@ -41,10 +41,22 @@ int main()
     while (std::chrono::system_clock::now() < timePt);
     timePt = std::chrono::system_clock::now() + std::chrono::seconds(10);
     while (std::chrono::system_clock::now() < timePt) {
+        //if (FS::FastSerial::available()) {
+        //    char outArray[10000];
+        //    FS::FastSerial::getString(outArray);
+        //    std::cout /* << outArray << " " */ << i << " " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - timePt + std::chrono::seconds(10)).count() << std::endl;
+        //    //std::cout << outArray << std::endl;
+        //    i++;
+        //}
         if (FS::FastSerial::available()) {
-            char outArray[600];
-            FS::FastSerial::getString(outArray);
-            std::cout /* << outArray */<< i << " " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - timePt + std::chrono::seconds(10)).count() << std::endl;
+            std::vector<uint32_t> outVec;
+            outVec = FS::FastSerial::get24Array();
+            std::cout /* << outArray << " " */ << i << " " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - timePt + std::chrono::seconds(100)).count() << '\n';
+            std::cout << outVec.size() << '\n';
+            /*for (int l = 0; l < outVec.size(); l++) {
+                std::cout << outVec.at(l) << " ";
+            }*/
+            std::cout << std::endl;
             i++;
         }
     } 

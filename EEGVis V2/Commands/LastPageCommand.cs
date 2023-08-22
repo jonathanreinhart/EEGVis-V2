@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace EEGVis_V2.Commands
 {
-    internal class NextPageCommand : CommandBase
+    internal class LastPageCommand : CommandBase
     {
         private readonly SerialGraphViewModel serialGraphViewModel;
 
-        public NextPageCommand(SerialGraphViewModel _serialGraphViewModel)
+        public LastPageCommand(SerialGraphViewModel _serialGraphViewModel)
         {
             serialGraphViewModel = _serialGraphViewModel;
         }
@@ -20,7 +20,11 @@ namespace EEGVis_V2.Commands
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                int newPage = (serialGraphViewModel.SelectedPage + 1) % serialGraphViewModel.NumPages;
+                int newPage = (serialGraphViewModel.SelectedPage - 1) % serialGraphViewModel.NumPages;
+                // go to the last page if we're on the first page
+                if (newPage < 0)
+                    newPage = serialGraphViewModel.NumPages - 1;
+                
                 serialGraphViewModel.getPageNumChannels(newPage);
                 serialGraphViewModel.SelectedPage = newPage;
             });

@@ -25,6 +25,7 @@ using EEGVis_V2.Viewmodels;
 using System.Windows.Threading;
 using ScottPlot;
 using System.Threading.Channels;
+using EEGVis_V2.models;
 
 namespace EEGVis_V2.Views
 {
@@ -58,6 +59,22 @@ namespace EEGVis_V2.Views
         // Using a DependencyProperty as the backing store for NumChannels.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty NumChannelsProperty =
             DependencyProperty.Register("NumChannels", typeof(int), typeof(GraphView), new PropertyMetadata(1));
+
+
+
+        public int CurStartChannel
+        {
+            get { return (int)GetValue(CurStartChannelProperty); }
+            set { SetValue(CurStartChannelProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CurStartChannel.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CurStartChannelProperty =
+            DependencyProperty.Register("CurStartChannel", typeof(int), typeof(GraphView), new PropertyMetadata(0));
+
+
+
+
         #endregion
 
         #region propdp functions
@@ -70,46 +87,58 @@ namespace EEGVis_V2.Views
                 {
                     double[] newData = graphView.GraphData;
                     //Trace.WriteLine(newData.Length);
-                    if(newData.Length>0)
+                    if (newData != null)
                     {
-                        //Trace.WriteLine(newData.Length);
-                        graphView.NumCall++;
-                        //init every data-array
-                        if (graphView.FirstCall)
+                        if (newData.Length > 0)
                         {
-                            //Trace.WriteLine("starting init");
-                            graphView.DataPlots = new WpfPlot[graphView.NumChannels];
-                            graphView.DataYs = new double[graphView.NumChannels][];
-                            // add one graph for each channel
-                            for (int i = 0; i < graphView.NumChannels; i++)
+                            //Trace.WriteLine(newData.Length);
+                            graphView.NumCall++;
+                            //init every data-array
+                            if (graphView.FirstCall)
                             {
-                                RowDefinition curRowDef = new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) };
-                                graphView.grid.RowDefinitions.Add(curRowDef);
-                                graphView.DataPlots[i] = new WpfPlot();
-                                graphView.DataPlots[i].Plot.Title("channel " + i.ToString());
-                                graphView.DataPlots[i].Plot.Style(ScottPlot.Style.Blue1);
-                                // hide just the horizontal axis ticks
-                                graphView.DataPlots[i].Plot.XAxis.Ticks(false);
-                                // hide the lines on the bottom, right, and top of the plot
-                                graphView.DataPlots[i].Plot.XAxis.Line(false);
-                                graphView.DataPlots[i].Plot.YAxis2.Line(false);
-                                graphView.DataPlots[i].Plot.XAxis2.Line(false);
-                                graphView.DataPlots[i].SetValue(Grid.RowProperty, i);
-                                graphView.grid.Children.Add(graphView.DataPlots[i]);
-                                graphView.DataYs[i] = new double[newData.Length / graphView.NumChannels];
-                                graphView.DataPlots[i].Plot.AddSignal(graphView.DataYs[i]);
+                                //Trace.WriteLine("starting init");
+                                graphView.DataPlots = new WpfPlot[graphView.NumChannels];
+                                graphView.DataYs = new double[graphView.NumChannels][];
+                                // add one graph for each channel
+                                for (int i = 0; i < graphView.NumChannels; i++)
+                                {
+                                    RowDefinition curRowDef = new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) };
+                                    graphView.grid.RowDefinitions.Add(curRowDef);
+                                    graphView.DataPlots[i] = new WpfPlot();
+                                    graphView.DataPlots[i].Plot.Title("channel " + (graphView.CurStartChannel + i).ToString());
+                                    graphView.DataPlots[i].Plot.Style(ScottPlot.Style.Blue1);
+                                    // hide just the horizontal axis ticks
+                                    graphView.DataPlots[i].Plot.XAxis.Ticks(false);
+                                    // hide the lines on the bottom, right, and top of the plot
+                                    graphView.DataPlots[i].Plot.XAxis.Line(false);
+                                    graphView.DataPlots[i].Plot.YAxis2.Line(false);
+                                    graphView.DataPlots[i].Plot.XAxis2.Line(false);
+                                    graphView.DataPlots[i].SetValue(Grid.RowProperty, i);
+                                    graphView.grid.Children.Add(graphView.DataPlots[i]);
+                                    graphView.DataYs[i] = new double[newData.Length / graphView.NumChannels];
+                                    graphView.DataPlots[i].Plot.AddSignal(graphView.DataYs[i]);
+                                }
+                                graphView.FirstCall = false;
                             }
-                            graphView.FirstCall = false;
-                        }
-                        //Trace.WriteLine(newData.Length);
-                        for (int i = 0; i < newData.Length; i++)
-                        {
-                            graphView.DataYs[i % graphView.NumChannels][i / graphView.NumChannels] = newData[i];
-                        }
-                        for (int i = 0; i < graphView.NumChannels; i++)
-                        {
-                            graphView.DataPlots[i].Plot.AxisAuto();
-                            graphView.DataPlots[i].Render();
+                            // Trace.WriteLine(newData.Length);
+                            
+                            
+                            try
+                            {
+                                for (int i = 0; i < newData.Length; i++)
+                                {
+                                    graphView.DataYs[i % graphView.NumChannels][i / graphView.NumChannels] = newData[i];
+                                }
+                                for (int i = 0; i < graphView.NumChannels; i++)
+                                {
+                                    graphView.DataPlots[i].Plot.AxisAuto();
+                                    graphView.DataPlots[i].Render();
+                                }
+                            }
+                            catch (IndexOutOfRangeException e)
+                            {
+                                // do nothing
+                            }
                         }
                     }
                 });
