@@ -113,7 +113,7 @@ namespace EEGVis_V2.models
                             // save filtered data in CurData and data write to csv file
                             for (int i = 0; i < LenDataPacket; i++)
                             {
-                                CurData[i] = data_filtered[i];
+                                CurData[i] = data[i];
                                 //write current data to file
                                 _writer.WriteLine(CurData[i].ToString());
                             }
