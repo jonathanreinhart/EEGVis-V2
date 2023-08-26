@@ -23,7 +23,7 @@ namespace EEGVis_V2.models
         public bool connected = false;
         public bool reconnecting = false;
         public const int NumDatapoints = 200;//datapoints in 1s
-        public const int NumChannels = 24;
+        public const int NumChannels = 2;
         public const int LenDatapoint = 7;
         public const int LenDataPacket = NumChannels * NumDatapoints / 10;
 
@@ -113,7 +113,7 @@ namespace EEGVis_V2.models
                             // save filtered data in CurData and data write to csv file
                             for (int i = 0; i < LenDataPacket; i++)
                             {
-                                CurData[i] = data_filtered[i];
+                                CurData[i] = data[i];
                                 //write current data to file
                                 _writer.WriteLine(CurData[i].ToString());
                             }
