@@ -142,6 +142,7 @@ namespace EEGVis_V2.Viewmodels
         public SerialData SerialData_;
         public bool UpdateData;
         public bool PlotSelected;
+        public const int SecondsData = 5;
         private int _num_raw_datapoints;
 
         public SerialGraphViewModel()
@@ -160,7 +161,7 @@ namespace EEGVis_V2.Viewmodels
 
             NumPages = (int)Math.Ceiling((double)NumChannels / MaxChannels);
             //make Raw data size so that it can hold SecondsRawData seconds of data of all the channels
-            _num_raw_datapoints = SerialData.NumChannels * SerialData.NumDatapoints * AcquisitionViewModel.SecondsData;
+            _num_raw_datapoints = SerialData.NumChannels * SerialData.NumDatapoints * SecondsData;
             double[] newData = new double[_num_raw_datapoints];
             for (int i = 0; i < _num_raw_datapoints; i++)
             {
@@ -185,7 +186,7 @@ namespace EEGVis_V2.Viewmodels
             // set the data of selected channels to the data already saved in RawData
             if (PlotSelected)
             {
-                int newPointsLength = SelectedPageNumChannels * SerialData.NumDatapoints * AcquisitionViewModel.SecondsData;
+                int newPointsLength = SelectedPageNumChannels * SerialData.NumDatapoints * SecondsData;
 
                 double[] newData = new double[newPointsLength];
 
@@ -204,7 +205,7 @@ namespace EEGVis_V2.Viewmodels
             }
             else
             {
-                int newPointsLength = SelectedPageNumChannels * SerialData.NumDatapoints * AcquisitionViewModel.SecondsData;
+                int newPointsLength = SelectedPageNumChannels * SerialData.NumDatapoints * SecondsData;
 
                 double[] newData = new double[newPointsLength];
                 
@@ -241,7 +242,7 @@ namespace EEGVis_V2.Viewmodels
                             //updated data
                             double[] newData = new double[_num_raw_datapoints];
                             //number of datapoints that are new
-                            int newDataNum = (_num_raw_datapoints / AcquisitionViewModel.SecondsData / 10);
+                            int newDataNum = (_num_raw_datapoints / SecondsData / 10);
                             for (int i = 0; i < RawData.Length - newDataNum; i++)
                             {
                                 newData[i] = RawData[i + newDataNum];

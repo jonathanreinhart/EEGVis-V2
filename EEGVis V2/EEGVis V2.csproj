@@ -9,6 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="rsc\Acquisition\.png" />
+    <None Remove="rsc\Acquisition\bFeet.png" />
+    <None Remove="rsc\Acquisition\bFists.png" />
     <None Remove="rsc\Acquisition\computer.png" />
     <None Remove="rsc\Acquisition\eight.png" />
     <None Remove="rsc\Acquisition\five.png" />
@@ -17,11 +20,14 @@
     <None Remove="rsc\Acquisition\heater.png" />
     <None Remove="rsc\Acquisition\humidity.png" />
     <None Remove="rsc\Acquisition\lamp.png" />
+    <None Remove="rsc\Acquisition\lFist.png" />
     <None Remove="rsc\Acquisition\nine.png" />
     <None Remove="rsc\Acquisition\off.png" />
     <None Remove="rsc\Acquisition\on.png" />
     <None Remove="rsc\Acquisition\one.png" />
     <None Remove="rsc\Acquisition\pressure.png" />
+    <None Remove="rsc\Acquisition\rest.png" />
+    <None Remove="rsc\Acquisition\rFist.png" />
     <None Remove="rsc\Acquisition\seven.png" />
     <None Remove="rsc\Acquisition\six.png" />
     <None Remove="rsc\Acquisition\speaker.png" />
@@ -48,19 +54,37 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="rsc\Acquisition\bFeet.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="rsc\Acquisition\bFists.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="rsc\Acquisition\computer.png" />
     <Resource Include="rsc\Acquisition\eight.png" />
+    <Resource Include="rsc\Acquisition\.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="rsc\Acquisition\five.png" />
     <Resource Include="rsc\Acquisition\four.png" />
     <Resource Include="rsc\Acquisition\greenhouse.png" />
     <Resource Include="rsc\Acquisition\heater.png" />
     <Resource Include="rsc\Acquisition\humidity.png" />
     <Resource Include="rsc\Acquisition\lamp.png" />
+    <Resource Include="rsc\Acquisition\lFist.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="rsc\Acquisition\nine.png" />
     <Resource Include="rsc\Acquisition\off.png" />
     <Resource Include="rsc\Acquisition\on.png" />
     <Resource Include="rsc\Acquisition\one.png" />
     <Resource Include="rsc\Acquisition\pressure.png" />
+    <Resource Include="rsc\Acquisition\rest.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="rsc\Acquisition\rFist.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="rsc\Acquisition\seven.png" />
     <Resource Include="rsc\Acquisition\six.png" />
     <Resource Include="rsc\Acquisition\speaker.png" />

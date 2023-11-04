@@ -42,11 +42,14 @@ namespace EEGVis_V2
 
         private void updateWindow()
         {
+            if (ViewContentControl.Content is IDisposable disposableView)
+                disposableView.Dispose();
+            
             _serialGraphViewModel.UpdateData = false;
             _serialGraphViewModel.PlotSelected = false;
             switch ((string)NavigationMenuListBox.SelectedItem)
             {
-                case "Acquisition":
+                case "Acquisition":      
                     _serialGraphViewModel.UpdateData = true;
                     ViewContentControl.Content = new AcquisitionView(_serialGraphViewModel);
                     break;

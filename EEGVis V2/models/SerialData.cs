@@ -23,10 +23,11 @@ namespace EEGVis_V2.models
         public bool connected = false;
         public bool reconnecting = false;
         public const int NumDatapoints = 200;//datapoints in 1s
-        public const int NumChannels = 2;
+        public const int NumChannels = 6;
         public const int LenDatapoint = 7;
         public const int LenDataPacket = NumChannels * NumDatapoints / 10;
 
+        #region properties
         private List<double> _curData;
         public List<double> CurData
         {
@@ -39,6 +40,9 @@ namespace EEGVis_V2.models
             set { _curData = value; }
         }
 
+        public static int NumData = 0;
+        #endregion
+
         private List<UInt32> _lastData;
 
 
@@ -46,7 +50,7 @@ namespace EEGVis_V2.models
         private int baudrate;
         private const int buffersize = 1;
         private const int _start_delay = 1700;
-        private const string _data_file = "../../../models/EEGData.csv";
+        private const string _data_file = "EEGData13.csv";
         private readonly StreamWriter _writer;
         private readonly FastSerial fs = new FastSerial();
 
@@ -71,7 +75,7 @@ namespace EEGVis_V2.models
         }
 
         /// <summary>
-        /// Gets Serial data and saves it in <see cref="CurData"/>
+        /// Gets Serial data and saves filtered signal in <see cref="CurData"/> and unfiltered signal in <see cref="CurDataUnfiltered"/>
         /// </summary>
         /// <param name="obj"></param>
         private void GetData(object? obj)
@@ -92,7 +96,7 @@ namespace EEGVis_V2.models
                 {
                     UInt32[] data = fs.get24Array();
 
-                    Debug.WriteLine("data: " + data.Length);
+                    //Debug.WriteLine("data: " + data.Length);
                     if (!firstString)
                     {
                         if (data.Length == LenDataPacket)
@@ -113,14 +117,16 @@ namespace EEGVis_V2.models
                             // save filtered data in CurData and data write to csv file
                             for (int i = 0; i < LenDataPacket; i++)
                             {
+                                //CurDataUnfiltered[i] = data[i];
                                 CurData[i] = data[i];
-                                //write current data to file
-                                _writer.WriteLine(CurData[i].ToString());
+                                //write current UNFILTERED data to file
+                                _writer.WriteLine(data[i].ToString());
                             }
+                            NumData += data.Count();
                             newDataAvailable = true;
                         }
                     }
-                    else 
+                    else
                     {
                         firstString = false;
                     }

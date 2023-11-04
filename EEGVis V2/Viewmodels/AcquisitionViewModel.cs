@@ -15,7 +15,7 @@ using static System.Net.WebRequestMethods;
 
 namespace EEGVis_V2.Viewmodels
 {
-    public class AcquisitionViewModel : ViewModelBase
+    public class AcquisitionViewModel : ViewModelBase, IDisposable
     {
 
         #region Properties
@@ -30,6 +30,20 @@ namespace EEGVis_V2.Viewmodels
 			{
                 _label = value;
 				OnPropertyChanged(nameof(Label));
+			}
+		}
+
+		private String _progress;
+		public String Progress
+		{
+			get
+			{
+				return _progress;
+			}
+			set
+			{
+				_progress = value;
+				OnPropertyChanged(nameof(Progress));
 			}
 		}
 
@@ -74,37 +88,43 @@ namespace EEGVis_V2.Viewmodels
 				OnPropertyChanged(nameof(ImageSource));
 			}
 		}
+
 		#endregion
 
 		#region Authors
 		private IDictionary<string, string> _authors = new Dictionary<string, string>(){
-			{"lamp", "Freepik"},
-			{"off", "scrip"},
-			{"on", "Freepik"},
-            {"zero", "Hight Quality Icons"},
-            {"one", "Hight Quality Icons"},
-            {"two", "Hight Quality Icons"},
-            {"three", "Hight Quality Icons"},
-            {"four", "Hight Quality Icons"},
-            {"five", "Hight Quality Icons"},
-            {"six", "Hight Quality Icons"},
-            {"seven", "Hight Quality Icons"},
-            {"eight", "Hight Quality Icons"},
-            {"nine", "Hight Quality Icons"},
-			{"heater", "Nikita Golubev"},
-            {"speaker", "Freepik"},
-            {"temperature", "Freepik"},
-            {"humidity", "Freepik"},
-            {"pressure", "Freepik"},
-            {"weather forecast", "Freepik"},
-            {"surveillance camera", "Freepik"},
-            {"computer", "Freepik"},
-            {"greenhouse", "Freepik"},
-            
+			//{"lamp", "Freepik"},
+			//{"off", "scrip"},
+			//{"on", "Freepik"},
+   //         {"zero", "Hight Quality Icons"},
+   //         {"one", "Hight Quality Icons"},
+   //         {"two", "Hight Quality Icons"},
+   //         {"three", "Hight Quality Icons"},
+   //         {"four", "Hight Quality Icons"},
+   //         {"five", "Hight Quality Icons"},
+   //         {"six", "Hight Quality Icons"},
+   //         {"seven", "Hight Quality Icons"},
+   //         {"eight", "Hight Quality Icons"},
+   //         {"nine", "Hight Quality Icons"},
+			//{"heater", "Nikita Golubev"},
+   //         {"speaker", "Freepik"},
+   //         {"temperature", "Freepik"},
+   //         {"humidity", "Freepik"},
+   //         {"pressure", "Freepik"},
+   //         {"weather forecast", "Freepik"},
+   //         {"surveillance camera", "Freepik"},
+   //         {"computer", "Freepik"},
+   //         {"greenhouse", "Freepik"},
+			{"lFist", "Smashicons"},
+            {"rFist", "Smashicons"},
+            {"bFists", "Smashicons"},
+            {"bFeet", "Freepik"},
+            {"rest", "Freepik"}
         };
 		#endregion
 
-		public static int SecondsData = 5;
+		public static int SecondsData = 2;
+		public static int SecondsTotal = 60;
 
         private double[] _data;
         private Random _rnd = new Random();
@@ -112,22 +132,19 @@ namespace EEGVis_V2.Viewmodels
 		//counts seconds since last label change
 		private int _cur_sec = 0;
         private SerialGraphViewModel _serialGraphViewModel;
-        private const string _data_file = "../../../models/AcquisitionData.csv";
+        private const string _data_file = "AcquisitionData13.csv";
 
         public AcquisitionViewModel(SerialGraphViewModel serialGraphViewModel)
 		{
             _data = new double[SecondsData * SerialData.NumDatapoints];
 
-			//set up csv file
-			System.IO.File.WriteAllText(_data_file, "label,");
-            for (int i = 0; i < SerialData.NumDatapoints * SecondsData; i++)
-			{
-                System.IO.File.AppendAllText(_data_file, "P" + i + ",");
-            }
-			System.IO.File.AppendAllText(_data_file, Environment.NewLine);
+            //set up csv file
+            System.IO.File.WriteAllText(_data_file, "label,start,end" + Environment.NewLine);
+			Debug.WriteLine("init acquisition");
 
-                ChangeLabel("lamp");
-			_serialGraphViewModel = serialGraphViewModel;
+            ChangeLabel("rest");
+			Progress = "0/" + SecondsTotal;
+            _serialGraphViewModel = serialGraphViewModel;
             _serialGraphViewModel.PropertyChanged += SerialGraphViewModel_PropertyChanged;
         }
 
@@ -135,39 +152,75 @@ namespace EEGVis_V2.Viewmodels
 		{
 			if (e.PropertyName == "RawData")
 			{
-				if (_cur_sec >= SecondsData * 10)
-				{
-					//because we just set SecondsData to 5, we can just take data as it is for now
-					_data = _serialGraphViewModel.RawData;
-					System.IO.File.AppendAllText(_data_file, _previousLabel + ",");
-                    System.IO.File.AppendAllText(_data_file, string.Join(",", _data) + Environment.NewLine);
-                    
-                    ChangeLabel();
-					_cur_sec = 0;
+                // if one run is done, detach the event handler
+                if (_cur_sec > SecondsTotal * 10)
+                {
+                    _serialGraphViewModel.PropertyChanged -= SerialGraphViewModel_PropertyChanged;
+                    return;
                 }
+
+                // save labels in specific interval
+                if (_cur_sec % (SecondsData * 10) == 0 && _cur_sec>0)
+				{
+                    // only save indecies of the last 2 seconds
+                    System.IO.File.AppendAllText(_data_file, _previousLabel + ",");
+                    String startIndex = (SerialData.NumData - SecondsData * SerialData.NumDatapoints * SerialData.NumChannels).ToString();
+                    String endIndex = (SerialData.NumData - 1).ToString();
+                    System.IO.File.AppendAllText(_data_file, startIndex + "," +  endIndex + Environment.NewLine);
+                    Progress = (_cur_sec / 10).ToString() + "/" + SecondsTotal;
+                    ChangeLabel();
+                }
+
 				_cur_sec++;
 			}
 		}
 
-		public void ChangeLabel(string? label = null)
+        /// <summary>
+        /// <para>Changes the label and the image to a random one.</para>
+		/// <para>The rest label always comes between the other labels</para>
+        /// </summary>
+        /// <param name="label">Label to swtich to.</param>
+        public void ChangeLabel(string? label = null)
 		{
-            //get random label
-            if (label == null)
-                label = _authors.Keys.ElementAt(_rnd.Next(_authors.Count));
-
-			//avoid showing the same label two times
-			while (label == _previousLabel)
+			//get random label
+			if (label == null)
 			{
-                label = _authors.Keys.ElementAt(_rnd.Next(_authors.Count));
-            }
+				if (_previousLabel != "rest")
+				{
+					label = "rest";
+				}
+				else
+				{
+                    label = _authors.Keys.ElementAt(_rnd.Next(_authors.Count - 1));
+
+                    //avoid showing the same label two times
+                    while (label == _previousLabel)
+                    {
+                        label = _authors.Keys.ElementAt(_rnd.Next(_authors.Count - 1));
+                    }
+                }
+			}
 
             Trace.WriteLine("change label: " + label);
             Label = label;
             ImageSource = "../rsc/Acquisition/" + label + ".png";
-            AttributionLink = "https://www.flaticon.com/free-icons/" + label;
-            AttributionText = label + " icon created by " + _authors[label] + " -Flaticon";
+			if (label != "")
+			{
+                AttributionLink = "https://www.flaticon.com/free-icons/" + label;
+                AttributionText = label + " icon created by " + _authors[label] + " -Flaticon";
+
+            }
+			else
+			{
+                AttributionLink = "";
+                AttributionText = "";
+            }
 			_previousLabel = label;
         }
 
+        public void Dispose()
+        {
+            _serialGraphViewModel.PropertyChanged -= SerialGraphViewModel_PropertyChanged;
+        }
     }
 }

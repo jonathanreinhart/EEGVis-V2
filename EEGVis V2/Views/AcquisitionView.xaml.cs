@@ -20,13 +20,20 @@ namespace EEGVis_V2.Views
     /// <summary>
     /// Interaction logic for AcquisitionView.xaml
     /// </summary>
-    public partial class AcquisitionView : UserControl
+    public partial class AcquisitionView : UserControl, IDisposable
     {
+
         public AcquisitionView(SerialGraphViewModel serialGraphViewModel)
         {
             InitializeComponent();
             //initialize the viewmodel and pass the current data ViewModel
             DataContext = new AcquisitionViewModel(serialGraphViewModel);
+        }
+
+        public void Dispose()
+        {
+            if (DataContext is IDisposable disposableViewModel)
+                disposableViewModel.Dispose();
         }
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
