@@ -147,7 +147,7 @@ namespace EEGVis_V2.Viewmodels
 
         public SerialGraphViewModel()
         {
-            SerialData_ = new SerialData("COM4");
+            SerialData_ = new SerialData("COM5");
 
             MaxChannels = 3;
             SelectedPage = 0;

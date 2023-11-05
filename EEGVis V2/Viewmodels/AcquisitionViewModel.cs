@@ -124,7 +124,8 @@ namespace EEGVis_V2.Viewmodels
         };
 		#endregion
 
-		public static int SecondsData = 2;
+		public static double SecondsData = 1.2;
+		public static double SecondsRest = 2;
 		public static int SecondsTotal = 60;
 
         private double[] _data;
@@ -132,12 +133,14 @@ namespace EEGVis_V2.Viewmodels
 		private string _previousLabel;
 		//counts seconds since last label change
 		private int _cur_sec = 0;
+		private int _last_sec = 0;
         private SerialGraphViewModel _serialGraphViewModel;
         private const string _data_file = "AcquisitionData13.csv";
 
         public AcquisitionViewModel(SerialGraphViewModel serialGraphViewModel)
 		{
-            _data = new double[SecondsData * SerialData.NumDatapoints];
+			double data_l = SecondsData > SecondsRest ? SecondsData : SecondsRest;
+            _data = new double[(int)(data_l * SerialData.NumDatapoints)];
 
             //set up csv file
             System.IO.File.WriteAllText(_data_file, "label,start,end" + Environment.NewLine);
@@ -160,17 +163,35 @@ namespace EEGVis_V2.Viewmodels
                     return;
                 }
 
-                // save labels in specific interval
-                if (_cur_sec % (SecondsData * 10) == 0 && _cur_sec>0)
+				// save labels in specific interval
+				if (_cur_sec > 0)
 				{
-                    // only save indecies of the last 2 seconds
-                    System.IO.File.AppendAllText(_data_file, _previousLabel + ",");
-                    String startIndex = (SerialData.NumData - SecondsData * SerialData.NumDatapoints * SerialData.NumChannels).ToString();
-                    String endIndex = (SerialData.NumData - 1).ToString();
-                    System.IO.File.AppendAllText(_data_file, startIndex + "," +  endIndex + Environment.NewLine);
-                    Progress = (_cur_sec / 10).ToString() + "/" + SecondsTotal;
-                    ChangeLabel();
-                }
+					Debug.Write(_cur_sec - _last_sec);
+					Debug.Write(", ");
+					Debug.WriteLine(SecondsData * 10);
+					if (_cur_sec - _last_sec >= (SecondsRest * 10) && Label == "rest")
+					{
+                        // only save indecies of the last SecondsRest seconds
+                        System.IO.File.AppendAllText(_data_file, _previousLabel + ",");
+						String startIndex = ((int)(SerialData.NumData - SecondsRest * SerialData.NumDatapoints * SerialData.NumChannels)).ToString();
+						String endIndex = (SerialData.NumData - 1).ToString();
+						System.IO.File.AppendAllText(_data_file, startIndex + "," + endIndex + Environment.NewLine);
+						Progress = (_cur_sec / 10.0).ToString() + "/" + SecondsTotal;
+						_last_sec = _cur_sec;
+						ChangeLabel();
+					}
+					else if (_cur_sec - _last_sec >= (SecondsData * 10) && Label != "rest")
+					{
+                        // only save indecies of the last SecondsData seconds
+                        System.IO.File.AppendAllText(_data_file, _previousLabel + ",");
+                        String startIndex = ((int)(SerialData.NumData - SecondsData * SerialData.NumDatapoints * SerialData.NumChannels)).ToString();
+                        String endIndex = (SerialData.NumData - 1).ToString();
+                        System.IO.File.AppendAllText(_data_file, startIndex + "," + endIndex + Environment.NewLine);
+                        Progress = (_cur_sec / 10.0).ToString() + "/" + SecondsTotal;
+                        _last_sec = _cur_sec;
+                        ChangeLabel();
+                    }
+				}
 
 				_cur_sec++;
 			}
