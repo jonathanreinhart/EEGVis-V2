@@ -115,11 +115,12 @@ namespace EEGVis_V2.Viewmodels
    //         {"surveillance camera", "Freepik"},
    //         {"computer", "Freepik"},
    //         {"greenhouse", "Freepik"},
-			{"lFist", "Smashicons"},
-            {"rFist", "Smashicons"},
-            {"bFists", "Smashicons"},
-            {"bFeet", "Freepik"},
-            {"rest", "Freepik"}
+			//{"lFist", "Smashicons"},
+   //         {"rFist", "Smashicons"},
+   //         {"bFists", "Smashicons"},
+   //         {"bFeet", "Freepik"},
+			{"blink", "Freepik"},
+			{"rest", "Freepik"}
         };
 		#endregion
 

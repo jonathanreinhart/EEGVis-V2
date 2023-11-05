@@ -149,7 +149,7 @@ namespace EEGVis_V2.Viewmodels
         {
             SerialData_ = new SerialData("COM4");
 
-            MaxChannels = 6;
+            MaxChannels = 3;
             SelectedPage = 0;
             NumChannels = SerialData.NumChannels;
             getPageNumChannels(0);

@@ -12,6 +12,7 @@
     <None Remove="rsc\Acquisition\.png" />
     <None Remove="rsc\Acquisition\bFeet.png" />
     <None Remove="rsc\Acquisition\bFists.png" />
+    <None Remove="rsc\Acquisition\blink.png" />
     <None Remove="rsc\Acquisition\computer.png" />
     <None Remove="rsc\Acquisition\eight.png" />
     <None Remove="rsc\Acquisition\five.png" />
@@ -87,6 +88,7 @@
     </Resource>
     <Resource Include="rsc\Acquisition\seven.png" />
     <Resource Include="rsc\Acquisition\six.png" />
+    <Resource Include="rsc\Acquisition\blink.png" />
     <Resource Include="rsc\Acquisition\speaker.png" />
     <Resource Include="rsc\Acquisition\surveillance camera.png" />
     <Resource Include="rsc\Acquisition\temperature.png" />
