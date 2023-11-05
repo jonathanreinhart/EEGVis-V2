@@ -118,7 +118,7 @@ namespace EEGVis_V2.models
                             for (int i = 0; i < LenDataPacket; i++)
                             {
                                 //CurDataUnfiltered[i] = data[i];
-                                CurData[i] = data[i];
+                                CurData[i] = data_filtered[i];
                                 //write current UNFILTERED data to file
                                 _writer.WriteLine(data[i].ToString());
                             }
