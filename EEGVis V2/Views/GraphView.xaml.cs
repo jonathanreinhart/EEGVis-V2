@@ -1,31 +1,9 @@
-﻿using LiveCharts.Wpf;
-using LiveCharts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Threading;
-using System.Collections;
-using System.Globalization;
-using System.Diagnostics;
-using InteractiveDataDisplay.WPF;
-using System.ComponentModel;
-using EEGVis_V2.Viewmodels;
 using System.Windows.Threading;
 using ScottPlot;
-using System.Threading.Channels;
-using EEGVis_V2.models;
+using ScottPlot.WPF;
 
 namespace EEGVis_V2.Views
 {
@@ -106,17 +84,44 @@ namespace EEGVis_V2.Views
                                     graphView.grid.RowDefinitions.Add(curRowDef);
                                     graphView.DataPlots[i] = new WpfPlot();
                                     graphView.DataPlots[i].Plot.Title("channel " + (graphView.CurStartChannel + i).ToString());
-                                    graphView.DataPlots[i].Plot.Style(ScottPlot.Style.Blue1);
-                                    // hide just the horizontal axis ticks
-                                    graphView.DataPlots[i].Plot.XAxis.Ticks(false);
-                                    // hide the lines on the bottom, right, and top of the plot
-                                    graphView.DataPlots[i].Plot.XAxis.Line(false);
-                                    graphView.DataPlots[i].Plot.YAxis2.Line(false);
-                                    graphView.DataPlots[i].Plot.XAxis2.Line(false);
+                                    graphView.DataPlots[i].Margin = new Thickness(0);
+                                    //graphView.DataPlots[i].Plot.Style(ScottPlot.Style.Blue1);
+                                    //graphView.DataPlots[i].Plot.Layout.Fixed(new ScottPlot.PixelPadding(40, 10, 40, 5));
+
+                                    // styling
+                                    graphView.DataPlots[i].Plot.FigureBackground.Color = ScottPlot.Color.FromHex("07263B");
+                                    graphView.DataPlots[i].Plot.DataBackground.Color = ScottPlot.Color.FromHex("0A304A");
+                                    graphView.DataPlots[i].Plot.Axes.Color(ScottPlot.Colors.White);
+
+                                    graphView.DataPlots[i].Plot.Grid.MajorLineColor = ScottPlot.Color.FromHex("17374C");
+                                    graphView.DataPlots[i].Plot.Grid.MajorLineWidth = 1;
+
+                                    //// hide just the horizontal axis ticks
+                                    //graphView.DataPlots[i].Plot.XAxis.Ticks(false);
+                                    //// hide the lines on the bottom, right, and top of the plot
+                                    //graphView.DataPlots[i].Plot.XAxis.Line(false);
+                                    //graphView.DataPlots[i].Plot.YAxis2.Line(false);
+                                    //graphView.DataPlots[i].Plot.XAxis2.Line(false);
+
+                                    // SP5: Hiding Axes and Lines
+                                    //graphView.DataPlots[i].Plot.Axes.Bottom.TickGenerator = new ScottPlot.TickGenerators.EmptyTickGenerator();
+                                    graphView.DataPlots[i].Plot.Axes.Bottom.TickLabelStyle.IsVisible = false;
+                                    graphView.DataPlots[i].Plot.Axes.Bottom.FrameLineStyle.IsVisible = false;
+                                    graphView.DataPlots[i].Plot.Axes.Right.FrameLineStyle.IsVisible = false;
+                                    graphView.DataPlots[i].Plot.Axes.Top.FrameLineStyle.IsVisible = false;
+                                    graphView.DataPlots[i].Plot.Axes.Bottom.MajorTickStyle.Length = 0;
+                                    graphView.DataPlots[i].Plot.Axes.Bottom.MinorTickStyle.Length = 0;
+                                    //graphView.DataPlots[i].Plot.Layout.Frameless();
+
+                                    //PixelPadding padding = new(50, 0, 0, 0);
+                                    //graphView.DataPlots[i].Plot.Layout.Fixed(padding);
+                                    graphView.DataPlots[i].Plot.Axes.Title.Label.FontSize = 12;
+                                    graphView.DataPlots[i].Plot.Axes.Title.Label.Padding = 0;
+
                                     graphView.DataPlots[i].SetValue(Grid.RowProperty, i);
                                     graphView.grid.Children.Add(graphView.DataPlots[i]);
                                     graphView.DataYs[i] = new double[newData.Length / graphView.NumChannels];
-                                    graphView.DataPlots[i].Plot.AddSignal(graphView.DataYs[i]);
+                                    graphView.DataPlots[i].Plot.Add.Signal(graphView.DataYs[i]);
                                 }
                                 graphView.FirstCall = false;
                             }
@@ -131,8 +136,9 @@ namespace EEGVis_V2.Views
                                 }
                                 for (int i = 0; i < graphView.NumChannels; i++)
                                 {
-                                    graphView.DataPlots[i].Plot.AxisAuto();
-                                    graphView.DataPlots[i].Render();
+                                    graphView.DataPlots[i].Plot.Axes.SetLimitsX(0, graphView.DataYs[i].Length);
+                                    graphView.DataPlots[i].Plot.Axes.AutoScaleY();
+                                    graphView.DataPlots[i].Refresh();
                                 }
                             }
                             catch (IndexOutOfRangeException e)

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
     <RootNamespace>EEGVis_V2</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
@@ -12,7 +12,6 @@
     <None Remove="rsc\Acquisition\.png" />
     <None Remove="rsc\Acquisition\bFeet.png" />
     <None Remove="rsc\Acquisition\bFists.png" />
-    <None Remove="rsc\Acquisition\blink.png" />
     <None Remove="rsc\Acquisition\computer.png" />
     <None Remove="rsc\Acquisition\eight.png" />
     <None Remove="rsc\Acquisition\five.png" />
@@ -45,9 +44,7 @@
 
   <ItemGroup>
     <PackageReference Include="Appccelerate.EventBroker" Version="4.0.0" />
-    <PackageReference Include="InteractiveDataDisplay.WPF" Version="1.0.0" />
-    <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
-    <PackageReference Include="ScottPlot.WPF" Version="4.1.67" />
+    <PackageReference Include="ScottPlot.WPF" Version="5.1.57" />
   </ItemGroup>
 
   <ItemGroup>
@@ -88,7 +85,6 @@
     </Resource>
     <Resource Include="rsc\Acquisition\seven.png" />
     <Resource Include="rsc\Acquisition\six.png" />
-    <Resource Include="rsc\Acquisition\blink.png" />
     <Resource Include="rsc\Acquisition\speaker.png" />
     <Resource Include="rsc\Acquisition\surveillance camera.png" />
     <Resource Include="rsc\Acquisition\temperature.png" />
@@ -99,6 +95,21 @@
     <Resource Include="rsc\Icons\EEGIcon.png" />
     <Resource Include="rsc\Icons\GraphIcon.png" />
     <Resource Include="rsc\Icons\HomeIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>

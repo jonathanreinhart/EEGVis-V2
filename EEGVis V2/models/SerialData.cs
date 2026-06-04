@@ -4,7 +4,6 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reactive.Concurrency;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -50,7 +49,7 @@ namespace EEGVis_V2.models
         private int baudrate;
         private const int buffersize = 1;
         private const int _start_delay = 1700;
-        private const string _data_file = "EEGData13.csv";
+        private const string _data_file = "EEGData0.csv";
         private readonly StreamWriter _writer;
         private readonly FastSerial fs = new FastSerial();
 
@@ -118,7 +117,7 @@ namespace EEGVis_V2.models
                             for (int i = 0; i < LenDataPacket; i++)
                             {
                                 //CurDataUnfiltered[i] = data[i];
-                                CurData[i] = data_filtered[i];
+                                CurData[i] = data[i];
                                 //write current UNFILTERED data to file
                                 _writer.WriteLine(data[i].ToString());
                             }
